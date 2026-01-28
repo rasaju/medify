@@ -1,0 +1,1489 @@
+
+medify_logo_guideline.png
+
+153eae7c-f4e1-4727-9b1c-5ea3293264e7_義大_x_Medify_醫療提案.pdf
+399 lines
+
+pdf
+
+生成提案內容網頁
+主要內容文字不要修改
+Q&A 可以用收合展開的問題
+可以使用 log
+
+11:55 AM
+I'll create a professional proposal webpage for the Medify healthcare proposal. Let me start by examining the frontend-design skill for best practices.
+
+Reading the frontend-design skill to learn best practices for creating a professional proposal webpage
+Now I'll create a professional, modern proposal webpage that presents the Medify healthcare proposal with the logo branding and interactive Q&A sections.
+
+
+Creating a professional proposal webpage for the Medify healthcare platform with collapsible Q&A sections and the Medify logo branding
+medify_proposal.html
+Now let me move this to the outputs directory for you to access:
+
+
+Copying the proposal webpage to the outputs directory
+
+
+
+Presented file
+我已經為您創建了一個專業的 Medify 提案網頁！這個網頁包含：
+
+主要特色：
+
+使用 Medify 品牌配色（藍綠漸層）與 logo
+所有提案內容保持原文不變
+互動式 Q&A 區域（可點擊展開/收合）
+精美的視覺設計與動畫效果
+響應式設計，支援手機瀏覽
+使用 console.log 記錄頁面載入狀態
+功能亮點：
+
+三方案比較表格
+收合式 Q&A（共12個問題）
+成本與時程視覺化比較
+平滑的滾動動畫
+Hover 互動效果
+網頁已準備好供您查看！
+
+Medify proposal
+Code · HTML 
+logo 換成此圖：
+https://medify.com.tw/wp-content/uploads/2024/02/medify-logo202402.svg
+這個符號 󾠮 會顯示不出來，請替換掉
+
+1:41 PM
+
+6 steps
+
+Replacing the emoji symbol 󾠰 in Plan B section
++3
+-3
+medify_proposal.html
+
+Presented file
+已完成修改！
+
+更新內容：
+
+✅ Logo 已更換為 medify.com.tw 的 SVG 版本
+✅ 所有無法顯示的符號已替換為適合的 emoji：
+📚 多媒體衛教內容庫
+🎯 互動式設計
+📊 基礎數據追蹤
+🤝 共享決策支援（SDM）
+🤖 MaiAgent AI 深度協作
+📈 進階數據洞察
+網頁已更新完成！
+
+Medify proposal
+Code · HTML 
+
+
+Want to be notified when Claude responds?
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+Medify proposal · HTML
+Copy
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>義大 x Medify 醫療提案</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #6B9FD8;
+            --primary-cyan: #5BC5C5;
+            --dark-blue: #2D3E5C;
+            --light-bg: #F8FAFB;
+            --white: #FFFFFF;
+            --text-dark: #1A2332;
+            --text-gray: #5A6C7D;
+            --border-color: #E1E8ED;
+            --success-green: #4CAF50;
+            --warning-orange: #FF9800;
+            --accent-purple: #9B5DE5;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #F8FAFB 0%, #EEF2F6 100%);
+            color: var(--text-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .logo-container {
+            max-width: 320px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            filter: brightness(0) invert(1);
+            drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+        }
+
+        .hero h1 {
+            color: var(--white);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out 0.2s both;
+        }
+
+        .hero p {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out 0.4s both;
+        }
+
+        .hero .meta {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out 0.6s both;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-item::before {
+            content: '📋';
+            font-size: 1.2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 5px;
+            height: 32px;
+            background: linear-gradient(180deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+            border-radius: 3px;
+        }
+
+        .overview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .overview-table thead {
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+        }
+
+        .overview-table th,
+        .overview-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .overview-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .overview-table tbody tr {
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .overview-table tbody tr:hover {
+            background: var(--light-bg);
+            transform: scale(1.01);
+        }
+
+        .plan-card {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .plan-card:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 8px 24px rgba(107, 159, 216, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .plan-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .plan-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-subtitle {
+            color: var(--text-gray);
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-cyan);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(91, 197, 197, 0.05) 0%, rgba(107, 159, 216, 0.05) 100%);
+            border-left: 4px solid var(--primary-cyan);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .info-box strong {
+            color: var(--dark-blue);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .data-item {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .data-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(107, 159, 216, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .data-item h4 {
+            color: var(--dark-blue);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .data-item p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .qa-section {
+            margin-top: 2rem;
+        }
+
+        .qa-item {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .qa-item:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(107, 159, 216, 0.1);
+        }
+
+        .qa-question {
+            background: var(--light-bg);
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--dark-blue);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .qa-question:hover {
+            background: linear-gradient(135deg, rgba(91, 197, 197, 0.08) 0%, rgba(107, 159, 216, 0.08) 100%);
+        }
+
+        .qa-question::after {
+            content: '▼';
+            font-size: 0.8rem;
+            color: var(--primary-blue);
+            transition: transform 0.3s ease;
+        }
+
+        .qa-question.active::after {
+            transform: rotate(180deg);
+        }
+
+        .qa-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background: var(--white);
+        }
+
+        .qa-answer.active {
+            max-height: 2000px;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .qa-answer p {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        .qa-answer ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .qa-answer li {
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .cost-table thead {
+            background: var(--dark-blue);
+            color: var(--white);
+        }
+
+        .cost-table th,
+        .cost-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .cost-table th {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .cost-table tbody tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+
+        .cost-indicator {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .timeline-table thead {
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+            color: var(--white);
+        }
+
+        .timeline-table th,
+        .timeline-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-table th {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .timeline-table tbody tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+
+        footer {
+            background: var(--dark-blue);
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero .meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .overview-table,
+            .cost-table,
+            .timeline-table {
+                font-size: 0.85rem;
+            }
+
+            .overview-table th,
+            .overview-table td,
+            .cost-table th,
+            .cost-table td,
+            .timeline-table th,
+            .timeline-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .plan-card {
+                padding: 1.5rem;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(91, 197, 197, 0.15) 0%, rgba(107, 159, 216, 0.15) 100%);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="logo-container">
+            <img src="https://medify.com.tw/wp-content/uploads/2024/02/medify-logo202402.svg" alt="Medify Logo">
+        </div>
+        <h1>義大 x Medify 醫療提案</h1>
+        <p>義大醫院數位專案合作方案建議書（v2｜三層次方案版）</p>
+        <div class="meta">
+            <div class="meta-item">文件日期：2026-01-27</div>
+            <div class="meta-item">原始提案會議日期：2026-01-22</div>
+            <div class="meta-item">提案方：Medify 團隊</div>
+            <div class="meta-item">收件方：義大醫療財團法人</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title">📋 執行摘要</h2>
+            <p>感謝義大醫院於 2026-01-22 參與提案會議，並給予寶貴建議，經內部整合討論，以三層次合作方案（A / B / C），並包含當天的提問歸納，協助義大依<span class="highlight">需求、預算、導入深度</span>選擇合適模式。</p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">🧭 Medify 三方案總覽</h2>
+            <table class="overview-table">
+                <thead>
+                    <tr>
+                        <th>方案</th>
+                        <th>核心定位</th>
+                        <th>系統整合程度</th>
+                        <th>AI 應用</th>
+                        <th>適用對象</th>
+                        <th>適用場景</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>方案 A</strong></td>
+                        <td>Medify 圖文衛教平台</td>
+                        <td>API 資料同步</td>
+                        <td>無</td>
+                        <td>醫師個人</td>
+                        <td>快速導入、低風險</td>
+                    </tr>
+                    <tr>
+                        <td><strong>方案 B</strong></td>
+                        <td>SDM AI 互動平台</td>
+                        <td>週期性回寫</td>
+                        <td>客服<br>個人化建議</td>
+                        <td>全科別</td>
+                        <td>滿足 AI 期待</td>
+                    </tr>
+                    <tr>
+                        <td><strong>方案 C</strong></td>
+                        <td>A / B + 系統深度整合</td>
+                        <td>既有系統串接</td>
+                        <td>依 A 或 B</td>
+                        <td>全院</td>
+                        <td>長期投資</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">🎯 方案 A｜Medify 圖文衛教平台</h2>
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-title">核心定位</h3>
+                    <span class="plan-badge">最低門檻</span>
+                </div>
+                <p class="plan-subtitle">最低門檻、最快導入<br>標準化圖文衛教，不涉 AI</p>
+            </div>
+
+            <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">主要功能</h3>
+
+            <div class="data-grid">
+                <div class="data-item">
+                    <h4>📚 多媒體衛教內容庫</h4>
+                    <p>既有成熟產品</p>
+                    <ul class="feature-list">
+                        <li>2D / 3D 動畫（手術、解剖、器械）</li>
+                        <li>術後感受模擬（眩光、視覺變化）</li>
+                        <li>醫材比較表（功能 / 價格 / 適用族群）</li>
+                        <li>患者見證影片</li>
+                    </ul>
+                </div>
+
+                <div class="data-item">
+                    <h4>🎯 互動式設計</h4>
+                    <ul class="feature-list">
+                        <li>非線性閱讀</li>
+                        <li>點擊展開說明</li>
+                        <li>依疾病分類推薦內容</li>
+                    </ul>
+                </div>
+
+                <div class="data-item">
+                    <h4>📊 基礎數據追蹤</h4>
+                    <ul class="feature-list">
+                        <li>觀看記錄（內容 / 時長 / 完成率）</li>
+                        <li>使用率統計</li>
+                        <li>滿意度調查</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>資料處理方式（不深度串接）</strong>
+                <p>Medify 雲端 → 定期 API 同步 → 義大地端伺服器</p>
+                <p><strong>同步資料：</strong>衛教內容、觀看數據、基礎互動記錄</p>
+                <p><strong>資料歸屬：</strong>100% 歸屬義大，可隨時匯出 / 刪除 / 停止同步</p>
+            </div>
+
+            <div class="info-box">
+                <strong>導入時程</strong>
+                <p>階段一：圖文內容上架（1–2 個月，POC）</p>
+                <p>階段二：API 回傳地端（6–9 個月，2026 年底前）</p>
+            </div>
+
+            <div class="info-box">
+                <strong>成本結構</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>一次性內容製作費</li>
+                    <li>平台年度訂閱費</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>客戶定位</strong>
+                <p>醫師個人使用，不參與產品設計</p>
+            </div>
+
+            <div class="qa-section">
+                <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">💡 方案 A｜關鍵問題回覆</h3>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q1｜是否每位醫師都需獨立內容？</div>
+                    <div class="qa-answer">
+                        <p><strong>❌ 不需要</strong></p>
+                        <ul>
+                            <li>✔ 設定科別共用內容庫（義大品牌）</li>
+                            <li>✔ 模組化組合</li>
+                            <li>✔ 醫師離職內容仍留院</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q2｜Web App or Native App？</div>
+                    <div class="qa-answer">
+                        <p><strong>Web App（PWA）</strong>、不需額外下載 APP</p>
+                        <ul>
+                            <li>掃 QR Code 即用</li>
+                            <li>不需 HIS 串接</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q3｜雲端還是地端？資料存在哪裡？</div>
+                    <div class="qa-answer">
+                        <ul>
+                            <li>預設雲端運作</li>
+                            <li>可協議定期回寫地端（Hybrid）</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q4｜資料歸屬與可攜權？</div>
+                    <div class="qa-answer">
+                        <ul>
+                            <li>資料歸義大</li>
+                            <li>Medify 僅保留去識別統計</li>
+                            <li>可匯出 PDF / JSON</li>
+                            <li>合約終止 30 天內刪除雲端備份</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q5｜既有外包內容廠商如何整合？</div>
+                    <div class="qa-answer">
+                        <p>Medify 提供兩種整合模式，可與既有廠商協作：</p>
+                        
+                        <p><strong>模式一：內容共創</strong></p>
+                        <ul>
+                            <li>既有廠商提供初版內容（如文字稿、照片）</li>
+                            <li>Medify 進行轉譯，升級為多媒體格式：
+                                <ul>
+                                    <li>文字 → 2D/3D 動畫</li>
+                                    <li>靜態圖 → 互動式比較表</li>
+                                    <li>口述內容 → 結構化衛教文章</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <p><strong>模式二：互動升級</strong></p>
+                        <ul>
+                            <li>既有內容保持原樣</li>
+                            <li>若要導入 SDM AI，則會進行 RAG 加工訓練：
+                                <ul>
+                                    <li>將內容轉化為 AI 可理解的知識庫</li>
+                                    <li>支援患者即時提問與回答</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <p><strong>為什麼需要 Medify 轉譯：</strong></p>
+                        <ul>
+                            <li>既有內容可能僅為靜態的「文字 + 圖片」</li>
+                            <li>Medify 可升級為：
+                                <ul>
+                                    <li>UI/UX 設計：符合患者閱讀習慣</li>
+                                    <li>多媒體格式：動畫、動圖、3D 模型</li>
+                                    <li>互動式設計：非線性閱讀、點擊展開</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q6｜內容版權？</div>
+                    <div class="qa-answer">
+                        <ul>
+                            <li>版權與使用權歸義大</li>
+                            <li>合約外商業使用責任自負</li>
+                            <li>Medify 僅能用去識別案例宣傳</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">🎯 方案 B｜SDM AI 互動整合</h2>
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-title">核心定位</h3>
+                    <span class="plan-badge">AI 賦能</span>
+                </div>
+                <p class="plan-subtitle">導入 SDM 互動平台<br>整合 MaiAgent AI 系統，滿足客戶對 AI 應用的期待</p>
+            </div>
+
+            <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">主要功能（使用方案 A 的所有圖文資料）</h3>
+
+            <div class="data-grid">
+                <div class="data-item">
+                    <h4>🤝 共享決策支援（SDM）</h4>
+                    <ul class="feature-list">
+                        <li>結構化決策流程（風險告知 → 選項比較 → 偏好評估 → 決策確認）</li>
+                        <li>決策輔助工具（決策矩陣、風險計算器）</li>
+                        <li>家屬共同參與（支援多人同時查看）</li>
+                    </ul>
+                </div>
+
+                <div class="data-item">
+                    <h4>🤖 MaiAgent AI 深度協作</h4>
+                    <ul class="feature-list">
+                        <li>患者可透過 AI 對話釐清疑問</li>
+                        <li>AI 根據患者病史、需求提供個人化建議</li>
+                        <li>醫師可在後台調整 AI 正確度與回應方式</li>
+                    </ul>
+                </div>
+
+                <div class="data-item">
+                    <h4>📈 進階數據洞察</h4>
+                    <ul class="feature-list">
+                        <li>患者決策偏好分析（保守 vs 積極、價格敏感度）</li>
+                        <li>醫師諮詢時間優化建議</li>
+                        <li>SDM 實施報告（符合醫策會標準）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>MaiAgent AI 協作模式</strong>
+                <p><strong>MaiAgent 簡介：</strong></p>
+                <p>Medify 的 AI 合作夥伴，已有政府和大型院所的實際導入案例：數發部、工研院、長庚醫院、國泰人壽</p>
+                
+                <p style="margin-top: 1rem;"><strong>協作方式：</strong></p>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Medify 設計流程與內容：</strong>衛教內容製作與上架、SDM 流程設計、平台 UI/UX</li>
+                    <li><strong>MaiAgent 提供後台：</strong>AI 對話引擎、知識庫訓練（RAG）、院方醫師可在後台調整 AI 正確度</li>
+                    <li><strong>義大可參與：</strong>提供臨床回饋，協助優化 AI 回應、在後台調整特定科別的 AI 參數</li>
+                </ol>
+            </div>
+
+            <div class="info-box">
+                <strong>資料處理方式</strong>
+                <p><strong>週期性回寫 Raw Data：</strong></p>
+                <p>患者使用 SDM 平台(雲端) → 產生互動記錄（決策、提問、偏好） → 定期回寫 → 義大地端伺服器</p>
+                
+                <p style="margin-top: 1rem;"><strong>回寫資料內容：</strong></p>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>方案 A 的所有資料：</strong>衛教內容、患者觀看數據、基礎互動記錄</li>
+                    <li><strong>方案 B 新增：</strong>患者決策記錄、AI 提問 log、決策偏好分析</li>
+                </ul>
+                
+                <p style="margin-top: 1rem;"><strong>核心 AI Know-how 保留：</strong></p>
+                <p>AI 模型參數、訓練方式仍保留在 Medify<br>義大擁有學習素材（Raw Data），但不擁有 AI 模型本身</p>
+            </div>
+
+            <div class="info-box">
+                <strong>實現時程</strong>
+                <p>2026 年底前可實現，POC 階段約 4-6 個月</p>
+            </div>
+
+            <div class="info-box">
+                <strong>成本結構</strong>
+                <p>除方案 A 費用外，還包含：</p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>內容建置與 RAG 訓練</li>
+                    <li>平台建置費（SDM 模組客製化）</li>
+                    <li>AI 使用量計費（Token 計價，依實際使用量）</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>客戶定位</strong>
+                <p>科別合作夥伴</p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>SDM 流程設計上提供臨床回饋，共同設計流程</li>
+                    <li>參與 AI 知識庫優化與調整</li>
+                </ul>
+            </div>
+
+            <div class="qa-section">
+                <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">💡 方案 B - 相關問題回覆</h3>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q7：AI Learning Update 還是 Version Update？</div>
+                    <div class="qa-answer">
+                        <p><strong>回答：</strong>目前 Medify 的所有 AI 都是 <strong>Version Update（版本更新）</strong>模式。</p>
+                        
+                        <p><strong>說明：</strong></p>
+                        <ul>
+                            <li>資料需透過人工方式上傳與標註</li>
+                            <li>系統不會自動學習演進</li>
+                            <li>定期（如每季）由 Medify 團隊更新 AI 知識庫</li>
+                        </ul>
+
+                        <p><strong>運作流程：</strong></p>
+                        <ol style="margin-left: 1.5rem;">
+                            <li>收集專業醫療圖文、常見問題（義大提供）</li>
+                            <li>Medify 團隊分析、標註、整理</li>
+                            <li>更新 AI Knowledge Base（RAG）</li>
+                            <li>測試驗證（40 題驗證機制）</li>
+                            <li>部署新版本（Version 1.1 → 1.2）</li>
+                        </ol>
+
+                        <p><strong>為什麼不採用 Learning Update（自動學習）：</strong></p>
+                        <ol style="margin-left: 1.5rem;">
+                            <li><strong>品質管控：</strong>自動學習可能產生錯誤回答，醫療資訊必須由專業人員審核</li>
+                            <li><strong>責任歸屬：</strong>AI 自動學習產生的錯誤，責任難以釐清；人工審核過的內容，Medify 負完全責任</li>
+                            <li><strong>成本考量：</strong>Learning Update 需要大量 GPU 運算資源，成本高昂且不穩定；Version Update 成本可控</li>
+                        </ol>
+
+                        <p><strong>更新頻率：</strong></p>
+                        <ul>
+                            <li>每季更新一次（或依需求調整）</li>
+                            <li>緊急修正：1-2 週內完成</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q8：建置成本與採購方式？</div>
+                    <div class="qa-answer">
+                        <p><strong>回答：</strong>以下說明方案 B 的成本結構與費用拆解。</p>
+                        
+                        <p><strong>成本結構：</strong></p>
+                        <ol style="margin-left: 1.5rem;">
+                            <li><strong>一次性費用：</strong>內容製作費（依科別與複雜度）、平台建置費（SDM 模組客製化）</li>
+                            <li><strong>年度訂閱費：</strong>平台維運費、雲端伺服器費用</li>
+                            <li><strong>使用量計費：</strong>AI Token 費用（依實際對話量）、資料儲存費用（依資料量）</li>
+                        </ol>
+
+                        <p><strong>採購方式建議：</strong></p>
+                        <ul>
+                            <li>POC 階段：單一科別（如眼科白內障），3-6 個月驗證</li>
+                            <li>正式導入：依 POC 成果，簽訂年度合約</li>
+                            <li>擴展階段：逐步增加科別</li>
+                        </ul>
+
+                        <p><strong>報價方式：</strong></p>
+                        <p>需依義大實際需求範圍報價，建議先進行線上會議，釐清：優先導入科別、內容複雜度、預期使用量</p>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q9：如何量化 SDM 成效？</div>
+                    <div class="qa-answer">
+                        <p><strong>回答：</strong>提供完整的成效評估框架與 KPI 定義。</p>
+                        
+                        <p><strong>患者面向指標</strong></p>
+                        <table style="width: 100%; margin: 1rem 0; border-collapse: collapse;">
+                            <tr style="background: var(--light-bg);">
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">KPI</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">測量方式</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">目標值</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">患者滿意度</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">使用後問卷調查（5 點量表）</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">≥ 4.0</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">健康識能提升</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">使用前後知識測驗</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">提升 ≥ 30%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">決策後悔率</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">術後 3 個月追蹤問卷</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">≤ 10%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">平台使用率</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">掃描 QR Code 後實際使用比例</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">≥ 70%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">內容完成率</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">完整看完衛教內容的比例</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">≥ 60%</td>
+                            </tr>
+                        </table>
+
+                        <p><strong>醫師面向指標</strong></p>
+                        <table style="width: 100%; margin: 1rem 0; border-collapse: collapse;">
+                            <tr style="background: var(--light-bg);">
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">KPI</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">測量方式</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">目標值</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">諮詢時間縮短</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">使用前後門診時長比較</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">縮短 ≥ 30%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">重複解釋次數</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">醫師主觀評估（5 點量表）</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">減少 ≥ 50%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">患者提問品質</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">醫師主觀評估（5 點量表）</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">≥ 4.0</td>
+                            </tr>
+                        </table>
+
+                        <p><strong>醫院面向指標</strong></p>
+                        <table style="width: 100%; margin: 1rem 0; border-collapse: collapse;">
+                            <tr style="background: var(--light-bg);">
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">KPI</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">測量方式</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: left;">目標值</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">SDM 實施率</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">使用 SDM 平台的患者比例</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">≥ 80%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">醫療糾紛率</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">年度糾紛件數比較</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">減少 ≥ 20%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">評鑑分數</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">醫策會 SDM 項目評分</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">滿分</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">簽署同意書時間</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">平均簽署時長</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">縮短 ≥ 40%</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q10：患者可以問系統問題嗎？Knowledge Base 如何建置？</div>
+                    <div class="qa-answer">
+                        <p><strong>回答：</strong>可以。Medify 提供 AI 對話功能與 Knowledge Base 建置服務。</p>
+                        
+                        <p><strong>AI 對話功能展示</strong></p>
+                        <p>患者可提問的範例：</p>
+                        <ul>
+                            <li>「白內障手術會痛嗎？」</li>
+                            <li>「健保跟自費人工水晶體差在哪？」</li>
+                            <li>「我有高血壓，可以做手術嗎？」</li>
+                            <li>「手術後多久可以上班？」</li>
+                        </ul>
+
+                        <p><strong>AI 回應方式：</strong></p>
+                        <ol style="margin-left: 1.5rem;">
+                            <li>從 Knowledge Base 搜尋相關資訊（RAG）</li>
+                            <li>產生個人化回答</li>
+                            <li>附上參考來源（如「詳見：白內障手術流程說明」）</li>
+                        </ol>
+
+                        <p><strong>無法回答的問題處理：</strong></p>
+                        <ul>
+                            <li>若 AI 無法回答，會說：「這個問題建議您在門診時詢問醫師」</li>
+                            <li>同時記錄此提問，供 Medify 團隊優化知識庫</li>
+                        </ul>
+
+                        <p><strong>Knowledge Base 建置方式</strong></p>
+                        <p><strong>通用知識庫（Medify 提供）：</strong></p>
+                        <ul>
+                            <li>涵蓋常見疾病、手術、醫材的基礎知識</li>
+                            <li>例：白內障的成因、症狀、治療選項</li>
+                        </ul>
+
+                        <p><strong>客製化知識庫（義大提供素材）：</strong></p>
+                        <ul>
+                            <li>義大既有的衛教文章、影片、醫師口述</li>
+                            <li>Medify 協助轉譯為 AI 可理解的格式（RAG）</li>
+                        </ul>
+
+                        <p><strong>建置流程：</strong></p>
+                        <ol style="margin-left: 1.5rem;">
+                            <li>義大提供素材（文字、影片、錄音）</li>
+                            <li>Medify 團隊進行「轉譯」（文字→結構化資料、影片→自動字幕+關鍵詞標註、錄音→逐字稿+知識點萃取）</li>
+                            <li>上傳至 AI Knowledge Base（RAG）</li>
+                            <li>測試驗證（40 題驗證機制）</li>
+                            <li>上線</li>
+                        </ol>
+
+                        <p><strong>醫院自行新增 FAQ：</strong></p>
+                        <ul>
+                            <li>方案 B 提供後台介面</li>
+                            <li>義大可自行新增常見問題與答案</li>
+                            <li>無需技術背景，類似 Google 表單操作</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">🎯 方案 C｜高度系統整合</h2>
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3 class="plan-title">核心服務</h3>
+                    <span class="plan-badge">全院級</span>
+                </div>
+                <p class="plan-subtitle">全院級數位轉型<br>既有的系統深度串接（ex: HIS）</p>
+            </div>
+
+            <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">深度整合內容</h3>
+            <ul class="feature-list">
+                <li>地端系統讀寫</li>
+                <li>雲端平台資料回寫</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>導入時程（依照院方系統複雜度評估）</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>POC：6 個月</li>
+                    <li>全院導入：12–18 個月</li>
+                    <li>總計：18–24 個月</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>成本結構</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>客製開發費</li>
+                    <li>流量費</li>
+                    <li>長期維護合約</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>客戶定位</strong>
+                <p>高度系統整合客戶</p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>需深度整合既有系統</li>
+                    <li>全院級或醫療中心級導入</li>
+                </ul>
+            </div>
+
+            <div class="qa-section">
+                <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">💡 方案 C - 相關問題回覆</h3>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q11：三種合作模式差異？</div>
+                    <div class="qa-answer">
+                        <p><strong>回答：</strong>三個方案對應不同的合作模式。</p>
+                        
+                        <table style="width: 100%; margin: 1rem 0; border-collapse: collapse; font-size: 0.9rem;">
+                            <tr style="background: var(--dark-blue); color: white;">
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color);">項目</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color);">方案 A<br>（醫生個人使用者）</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color);">方案 B<br>（科別合作夥伴）</th>
+                                <th style="padding: 0.75rem; border: 1px solid var(--border-color);">方案 C<br>（高度系統整合）</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);"><strong>內容所有權</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">義大</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">義大</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">義大</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);"><strong>客製化程度</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">低（標準化產品）</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">中（模組化客製）</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">高（深度客製）</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);"><strong>參與產品設計</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">否</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">可提供臨床回饋</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">是（共同開發）</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);"><strong>初期投資</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">低</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">中</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">高</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);"><strong>適用場景</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">快速導入、降低風險</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">滿足 AI 期待、保留彈性</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">完整整合、長期投資</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);"><strong>技術支援</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">標準支援</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">優先支援</td>
+                                <td style="padding: 0.75rem; border: 1px solid var(--border-color);">待討論</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="qa-item">
+                    <div class="qa-question">Q12：資安認證（ISO 27001、HIPAA）？</div>
+                    <div class="qa-answer">
+                        <p><strong>回答：</strong>Medify 目前尚未取得 ISO 27001 認證，但已實施完整資安措施。</p>
+                        
+                        <p><strong>現有資安措施：</strong></p>
+                        <ol style="margin-left: 1.5rem;">
+                            <li><strong>傳輸加密：</strong>TLS 1.3</li>
+                            <li><strong>資料加密：</strong>AES-256（資料庫與備份）</li>
+                            <li><strong>存取控制：</strong>多因素認證（MFA）、角色權限管理（RBAC）</li>
+                            <li><strong>稽核日誌：</strong>完整記錄所有資料存取行為、定期安全掃描（每季一次）</li>
+                            <li><strong>Penetration Testing：</strong>已委託第三方進行滲透測試，測試報告可提供義大審閱</li>
+                        </ol>
+
+                        <p><strong>ISO 27001 認證：</strong></p>
+                        <ul>
+                            <li>Medify 目前尚未取得 ISO 27001 認證</li>
+                            <li>已規劃認證流程，時程依實際需求評估</li>
+                        </ul>
+
+                        <p><strong>HIPAA 認證：</strong></p>
+                        <ul>
+                            <li>Medify 為台灣公司，不受美國 HIPAA 規範</li>
+                            <li>但我們參考 HIPAA 標準，實施相應的資安措施</li>
+                        </ul>
+
+                        <p><strong>資安文件提供：</strong></p>
+                        <ul>
+                            <li>可提供完整資安措施文件供義大 IT 部門審閱</li>
+                            <li>可接受義大委託的第三方資安稽核</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">💰 成本與時程總覽</h2>
+            
+            <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">三方案成本比較</h3>
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>成本項目</th>
+                        <th>方案 A<br>Medify 圖文衛教平台</th>
+                        <th>方案 B<br>SDM AI 互動平台</th>
+                        <th>方案 C<br>A / B + HIS 深度整合</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>內容製作</strong></td>
+                        <td>高</td>
+                        <td>中</td>
+                        <td>無</td>
+                    </tr>
+                    <tr>
+                        <td><strong>平台建置</strong></td>
+                        <td>無</td>
+                        <td>中</td>
+                        <td>待訂</td>
+                    </tr>
+                    <tr>
+                        <td><strong>年度訂閱</strong></td>
+                        <td>低</td>
+                        <td>中</td>
+                        <td>待訂</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI Token</strong></td>
+                        <td>無</td>
+                        <td>依流量計費</td>
+                        <td>無</td>
+                    </tr>
+                    <tr>
+                        <td><strong>系統客製開發</strong></td>
+                        <td>無</td>
+                        <td>中（SDM 流程）</td>
+                        <td>高（HIS 整合）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>總成本</strong></td>
+                        <td><span class="cost-indicator">💰</span></td>
+                        <td><span class="cost-indicator">💰💰</span></td>
+                        <td><span class="cost-indicator">💰💰💰</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--dark-blue); margin: 2rem 0 1rem; font-size: 1.3rem;">實現時程比較</h3>
+            <table class="timeline-table">
+                <thead>
+                    <tr>
+                        <th>里程碑</th>
+                        <th>方案 A<br>Medify 圖文衛教平台</th>
+                        <th>方案 B<br>SDM AI 互動平台</th>
+                        <th>方案 C<br>A / B + HIS 深度整合</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>POC 啟動</strong></td>
+                        <td>1 個月</td>
+                        <td>1 個月</td>
+                        <td>2-3 個月</td>
+                    </tr>
+                    <tr>
+                        <td><strong>POC 完成</strong></td>
+                        <td>2 個月</td>
+                        <td>3 個月</td>
+                        <td>6 個月</td>
+                    </tr>
+                    <tr>
+                        <td><strong>正式上線</strong></td>
+                        <td>3 個月</td>
+                        <td>6 個月</td>
+                        <td>12 個月</td>
+                    </tr>
+                    <tr>
+                        <td><strong>全院導入</strong></td>
+                        <td>6 個月</td>
+                        <td>12 個月</td>
+                        <td>24 個月</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <p><strong>Medify 團隊</strong></p>
+        <p>提案日期：2026-01-27</p>
+        <p>感謝義大醫療財團法人的審閱與考慮</p>
+    </footer>
+
+    <script>
+        // Collapsible Q&A functionality
+        document.querySelectorAll('.qa-question').forEach(question => {
+            question.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const answer = this.nextElementSibling;
+                answer.classList.toggle('active');
+            });
+        });
+
+        // Smooth scroll animation on load
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add hover effect to tables
+        document.querySelectorAll('.overview-table tbody tr, .cost-table tbody tr, .timeline-table tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.01)';
+            });
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        console.log('Medify Proposal Page Loaded Successfully');
+        console.log('Interactive Q&A sections ready');
+        console.log('Total questions:', document.querySelectorAll('.qa-item').length);
+    </script>
+</body>
+</html>
+
+
