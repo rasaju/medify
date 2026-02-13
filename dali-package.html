@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>大里仁愛醫院專屬合作方案 - Medify</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --medify-cyan: #4FBECD;
+            --medify-blue: #6B9BD1;
+            --dark-bg: #0A1628;
+            --light-bg: #F8FAFB;
+            --text-dark: #1A2332;
+            --text-light: #5A6B7D;
+            --accent-gradient: linear-gradient(135deg, #4FBECD 0%, #6B9BD1 100%);
+            --card-shadow: 0 8px 32px rgba(79, 190, 205, 0.12);
+            --card-shadow-hover: 0 16px 48px rgba(79, 190, 205, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', -apple-system, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--light-bg);
+            overflow-x: hidden;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #0A1628 0%, #1A2F4A 100%);
+            padding: 80px 20px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(79, 190, 205, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(107, 155, 209, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 30px) scale(1.1); }
+        }
+        .logo-container {
+            max-width: 240px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            /* filter: brightness(0) invert(1); */
+            drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+        
+        .hero-title {
+            color: white;
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        .hero-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            font-size: 20px;
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .comparison-section {
+            padding: 80px 20px;
+            background: white;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--text-dark);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 60px;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 200px repeat(3, 1fr);
+            background: var(--accent-gradient);
+            color: white;
+            font-weight: 600;
+            padding: 24px 0;
+        }
+        
+        .table-header > div {
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 200px repeat(3, 1fr);
+            border-bottom: 1px solid #E5EAF0;
+            transition: all 0.3s ease;
+        }
+        
+        .table-row:hover {
+            background: #F8FAFB;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-cell {
+            padding: 20px;
+            text-align: center;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .table-cell:first-child {
+            font-weight: 600;
+            background: #F8FAFB;
+            text-align: left;
+            justify-content: flex-start;
+            padding-left: 30px;
+        }
+        
+        .price-highlight {
+            background: #F8FAFB;
+            color:var(--accent-gradiente);
+            font-weight: 700;
+            font-size: 20px;
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .plan-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        
+        .plan-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .plan-header {
+            margin-bottom: 30px;
+        }
+        
+        .plan-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        
+        .plan-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, rgba(79, 190, 205, 0.1) 0%, rgba(107, 155, 209, 0.1) 100%);
+            color: var(--medify-cyan);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .plan-price {
+            margin: 30px 0;
+            padding: 25px 0;
+            border-top: 2px solid #E5EAF0;
+            border-bottom: 2px solid #E5EAF0;
+        }
+        
+        .original-price {
+            font-size: 16px;
+            color: var(--text-light);
+            text-decoration: line-through;
+            margin-bottom: 8px;
+        }
+        
+        .discount-price {
+            font-size: 40px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .savings {
+            font-size: 15px;
+            color: #10B981;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin: 30px 0;
+        }
+        
+        .plan-features li {
+            padding: 12px 0;
+            padding-left: 32px;
+            position: relative;
+            color: var(--text-dark);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 22px;
+            height: 22px;
+            background: var(--accent-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .plan-highlight {
+            background: linear-gradient(135deg, rgba(79, 190, 205, 0.05) 0%, rgba(107, 155, 209, 0.05) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 4px solid var(--medify-cyan);
+        }
+        
+        .plan-highlight-title {
+            font-weight: 700;
+            color: var(--medify-cyan);
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        .plan-highlight-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+        
+        .video-section {
+            background: linear-gradient(135deg, #F8FAFB 0%, #FFFFFF 100%);
+            padding: 80px 20px;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 50px;
+            margin-top: 60px;
+        }
+        
+        .video-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        
+        .video-header {
+            padding: 30px;
+            background: var(--accent-gradient);
+            color: white;
+        }
+        
+        .video-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .video-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .video-embed {
+            padding: 30px;
+            background: white;
+        }
+        
+        .video-embed iframe {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            border: none;
+        }
+        .short-video iframe {
+            width: 100%;
+            height: 600px;
+            border-radius: 12px;
+            border: none;
+        }
+        
+        .savings-row {
+            color: var(--medify-cyan);
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 1024px) {
+            .table-header,
+            .table-row {
+                grid-template-columns: 150px repeat(3, 1fr);
+            }
+            
+            .table-cell:first-child {
+                padding-left: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .table-header,
+            .table-row {
+                display: none;
+            }
+            
+            .comparison-table {
+                padding: 0;
+            }
+            
+            .plans-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .plan-name {
+                font-size: 24px;
+            }
+            
+            .discount-price {
+                font-size: 32px;
+            }
+        }
+        
+        .mobile-table {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-table {
+                display: none;
+            }
+            
+            .mobile-table {
+                display: block;
+            }
+            
+            .mobile-plan-card {
+                background: white;
+                border-radius: 16px;
+                padding: 30px;
+                margin-bottom: 20px;
+                box-shadow: var(--card-shadow);
+            }
+            
+            .mobile-plan-title {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--text-dark);
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 3px solid var(--medify-cyan);
+            }
+            
+            .mobile-plan-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px solid #E5EAF0;
+            }
+            
+            .mobile-plan-row:last-child {
+                border-bottom: none;
+            }
+            
+            .mobile-plan-label {
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+            
+            .mobile-plan-value {
+                color: var(--text-light);
+                text-align: right;
+            }
+            
+            .mobile-plan-price {
+                background: var(--accent-gradient);
+                color: white;
+                font-weight: 700;
+                padding: 4px 12px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="medify_logo_guideline.png" alt="Medify Logo">
+                </div>
+            </div>
+            <h1 class="hero-title">大里仁愛醫院專屬合作方案</h1>
+            <p class="hero-subtitle">為您量身打造的醫療內容行銷解決方案，提升專業形象與患者信任</p>
+        </div>
+    </div>
+
+    <div class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">三方案比較總覽</h2>
+            
+            <!-- Desktop Table -->
+            <div class="comparison-table desktop-table">
+                <div class="table-header">
+                    <div>項目</div>
+                    <div>A - 圖文重點方案</div>
+                    <div>B - 綜合輕量方案</div>
+                    <div>C - 影音重點方案</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">圖文內容</div>
+                    <div class="table-cell">4 篇</div>
+                    <div class="table-cell">3 篇</div>
+                    <div class="table-cell">0</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">橫式長影片</div>
+                    <div class="table-cell">0</div>
+                    <div class="table-cell">1 支</div>
+                    <div class="table-cell">3 支</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">直式短影片</div>
+                    <div class="table-cell">0</div>
+                    <div class="table-cell">2 支</div>
+                    <div class="table-cell">6 支</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">醫師帳號</div>
+                    <div class="table-cell">1 組（一年訂閱）</div>
+                    <div class="table-cell">1 組（一年訂閱）</div>
+                    <div class="table-cell">1 組（一年訂閱）</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">原價</div>
+                    <div class="table-cell">NT$ 218,000</div>
+                    <div class="table-cell">NT$ 328,000</div>
+                    <div class="table-cell">NT$ 618,000</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">優惠價（含稅）</div>
+                    <div class="table-cell price-highlight">NT$ 147,000</div>
+                    <div class="table-cell price-highlight">NT$ 236,250</div>
+                    <div class="table-cell price-highlight">NT$ 340,200</div>
+                </div>
+                
+                <div class="table-row">
+                    <div class="table-cell">節省金額</div>
+                    <div class="table-cell savings-row">省下 NT$ 71,000</div>
+                    <div class="table-cell savings-row">省下 NT$ 91,750</div>
+                    <div class="table-cell savings-row">省下 NT$ 277,800</div>
+                </div>
+            </div>
+            
+            <!-- Mobile Cards -->
+            <div class="mobile-table">
+                <div class="mobile-plan-card">
+                    <div class="mobile-plan-title">A - 圖文重點方案</div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">圖文內容</span>
+                        <span class="mobile-plan-value">4 篇</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">橫式長影片</span>
+                        <span class="mobile-plan-value">0</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">直式短影片</span>
+                        <span class="mobile-plan-value">0</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">醫師帳號</span>
+                        <span class="mobile-plan-value">1 組</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">原價</span>
+                        <span class="mobile-plan-value">NT$ 218,000</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">優惠價</span>
+                        <span class="mobile-plan-price">NT$ 147,000</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">節省金額</span>
+                        <span class="mobile-plan-value" style="color: #4FBECD; font-weight: 600;">省下 NT$ 71,000</span>
+                    </div>
+                </div>
+                
+                <div class="mobile-plan-card">
+                    <div class="mobile-plan-title">B - 綜合輕量方案</div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">圖文內容</span>
+                        <span class="mobile-plan-value">3 篇</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">橫式長影片</span>
+                        <span class="mobile-plan-value">1 支</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">直式短影片</span>
+                        <span class="mobile-plan-value">2 支</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">醫師帳號</span>
+                        <span class="mobile-plan-value">1 組</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">原價</span>
+                        <span class="mobile-plan-value">NT$ 328,000</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">優惠價</span>
+                        <span class="mobile-plan-price">NT$ 236,250</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">節省金額</span>
+                        <span class="mobile-plan-value" style="color: #4FBECD; font-weight: 600;">省下 NT$ 91,750</span>
+                    </div>
+                </div>
+                
+                <div class="mobile-plan-card">
+                    <div class="mobile-plan-title">C - 影音重點方案</div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">圖文內容</span>
+                        <span class="mobile-plan-value">0</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">橫式長影片</span>
+                        <span class="mobile-plan-value">3 支</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">直式短影片</span>
+                        <span class="mobile-plan-value">6 支</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">醫師帳號</span>
+                        <span class="mobile-plan-value">1 組</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">原價</span>
+                        <span class="mobile-plan-value">NT$ 618,000</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">優惠價</span>
+                        <span class="mobile-plan-price">NT$ 340,200</span>
+                    </div>
+                    <div class="mobile-plan-row">
+                        <span class="mobile-plan-label">節省金額</span>
+                        <span class="mobile-plan-value" style="color: #4FBECD; font-weight: 600;">省下 NT$ 277,800</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comparison-section" style="background: #F8FAFB;">
+        <div class="container">
+            <h2 class="section-title">方案詳細內容</h2>
+            
+            <div class="plans-grid">
+                <!-- Plan A -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">A - 圖文重點方案</h3>
+                        <span class="plan-badge">內容深度專注</span>
+                    </div>
+                    
+                    <div class="plan-price">
+                        <div class="original-price">原價 NT$ 218,000</div>
+                        <div class="discount-price">NT$ 147,000</div>
+                        <div class="savings">節省 NT$ 71,000</div>
+                    </div>
+                    
+                    <ul class="plan-features">
+                        <li><strong>圖文內容 4 篇</strong><br>多篇優惠 7 折（原價 NT$ 200,000）</li>
+                        <li><strong>醫師帳號 1 組</strong><br>贈一年訂閱（原價 NT$ 18,000）</li>
+                    </ul>
+                    
+                    <div class="plan-highlight">
+                        <div class="plan-highlight-title">方案特色</div>
+                        <div class="plan-highlight-text">
+                            專注於內容深度，詳細說明複雜資訊，透過靜態圖像、易懂文字，減輕醫師負擔。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Plan B -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">B - 綜合輕量方案</h3>
+                        <span class="plan-badge">影音圖文兼具</span>
+                    </div>
+                    
+                    <div class="plan-price">
+                        <div class="original-price">原價 NT$ 328,000</div>
+                        <div class="discount-price">NT$ 236,250</div>
+                        <div class="savings">節省 NT$ 91,750</div>
+                    </div>
+                    
+                    <ul class="plan-features">
+                        <li><strong>圖文內容 3 篇</strong><br>多篇優惠 7 折（原價 NT$ 150,000）</li>
+                        <li><strong>長影片 1 支</strong><br>原價 NT$ 120,000</li>
+                        <li><strong>贈送短影片 2 支</strong><br>由長影片剪輯（原價 NT$ 40,000）</li>
+                        <li><strong>醫師帳號 1 組</strong><br>贈一年訂閱（原價 NT$ 18,000）</li>
+                    </ul>
+                    
+                    <div class="plan-highlight">
+                        <div class="plan-highlight-title">方案特色</div>
+                        <div class="plan-highlight-text">
+                            影音、圖文皆具備，兼顧「院內衛教」與「社群短影音」需求，素材可多平台延伸。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Plan C -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3 class="plan-name">C - 影音重點方案</h3>
+                        <span class="plan-badge">系列影音主軸</span>
+                    </div>
+                    
+                    <div class="plan-price">
+                        <div class="original-price">原價 NT$ 618,000</div>
+                        <div class="discount-price">NT$ 340,200</div>
+                        <div class="savings">節省 NT$ 277,800</div>
+                    </div>
+                    
+                    <ul class="plan-features">
+                        <li><strong>長影片 3 支</strong><br>多支優惠 9 折（原價 NT$ 360,000）</li>
+                        <li><strong>贈送短影片 6 支</strong><br>由長影片剪輯（原價 NT$ 240,000）</li>
+                        <li><strong>醫師帳號 1 組</strong><br>贈一年訂閱（原價 NT$ 18,000）</li>
+                    </ul>
+                    
+                    <div class="plan-highlight">
+                        <div class="plan-highlight-title">方案特色</div>
+                        <div class="plan-highlight-text">
+                            以系列影音為主軸，適合院內持續播放與社群長期經營，建立穩定曝光節奏。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="video-section">
+        <div class="container">
+            <h2 class="section-title">影片範例參考</h2>
+            
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-header">
+                        <div class="video-title">橫式長影片範例</div>
+                        <div class="video-subtitle">專業醫療衛教內容，適合院內播放與官網展示</div>
+                    </div>
+                    <div class="video-embed">
+                        <iframe src="https://player.vimeo.com/video/984128236?h=fb9b11e7e2&title=0&byline=0&portrait=0&mute=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <div class="video-header">
+                        <div class="video-title">直式短影片範例</div>
+                        <div class="video-subtitle">社群媒體專用，快速吸引注意力</div>
+                    </div>
+                    <div class="video-embed short-video">
+                        <iframe src="https://player.vimeo.com/video/1163183845?h=0e36aed9ea&title=0&byline=0&portrait=0&mute=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">Medify</div>
+            <p class="footer-text">
+                為您的醫療機構打造專業、易懂、具影響力的內容行銷方案<br>
+                讓專業知識觸及更多需要的人
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+1Password 選單可用。按向下箭頭進行選擇。
