@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回報治療完成</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #44BDDB;
+    --teal-light: #e8f7f9;
+    --teal-mid: #b2e6eb;
+    --teal-dark: #28A3CA;
+    --text-primary: #2C2C2C;
+    --text-secondary: #6b8a92;
+    --text-muted: #9bb5bc;
+    --bg: #f0f6f8;
+    --card: #ffffff;
+    --border: #daeaee;
+    --success: #34c97a;
+    --success-light: #e6f9ef;
+    --warn: #f59e0b;
+    --warn-light: #fef3c7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 28px 16px 120px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container { width: 100%; max-width: 480px; }
+
+  .page-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px; padding: 0 4px;
+  }
+  .page-header .icon {
+    width: 42px; height: 42px; background: var(--teal);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(42,180,192,0.35);
+  }
+  .page-header h1 { font-size: 22px; font-weight: 700; color: var(--teal-dark); letter-spacing: -0.3px; }
+  .page-header p  { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+  .card {
+    background: var(--card); border-radius: 20px; padding: 20px;
+    box-shadow: 0 2px 20px rgba(0,80,100,0.07); margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 14px;
+  }
+
+  /* selected display */
+  .selected-display {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; border-radius: 14px;
+    border: 2px solid var(--teal); background: var(--teal-light);
+    cursor: pointer; transition: all 0.2s; user-select: none;
+  }
+  .selected-display:hover { border-color: var(--teal-dark); }
+  .sel-circle {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: white; font-size: 13px; font-weight: 700;
+  }
+  .sel-info { flex: 1; }
+  .sel-name { font-size: 16px; font-weight: 700; color: var(--teal-dark); }
+  .sel-sub  { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .change-btn {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600; color: var(--teal-dark);
+    background: white; border: 1.5px solid var(--teal-mid);
+    border-radius: 20px; padding: 5px 12px; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .change-btn:hover { background: var(--teal-mid); }
+
+  /* expand list */
+  .expand-list {
+    overflow: hidden; max-height: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease; opacity: 0;
+  }
+  .expand-list.open { max-height: 600px; opacity: 1; }
+  .expand-inner { padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+  .inj-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px; border: 2px solid var(--border);
+    cursor: pointer; transition: all 0.18s; user-select: none;
+  }
+  .inj-option:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+  .inj-option.active { border-color: var(--teal); background: var(--teal-light); }
+  .opt-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--text-muted);
+    flex-shrink: 0; transition: all 0.18s;
+  }
+  .inj-option.active .opt-num { background: var(--teal); color: white; }
+  .opt-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .opt-sub  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .inj-option.active .opt-name { color: var(--teal-dark); }
+
+  .phase-divider {
+    font-size: 11px; color: var(--text-muted); font-weight: 500;
+    display: flex; align-items: center; gap: 8px; padding: 4px 2px 2px;
+  }
+  .phase-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* dates */
+  .date-row { display: flex; flex-direction: column; gap: 14px; }
+  .date-group { display: flex; flex-direction: column; gap: 6px; }
+  .date-group-label {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .badge {
+    font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px;
+  }
+  .badge-today { background: var(--teal-light); color: var(--teal-dark); }
+  .badge-next  { background: var(--warn-light);  color: var(--warn); }
+
+  .date-input-wrap { position: relative; }
+  .dicon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%); font-size: 16px; pointer-events: none;
+  }
+  .date-input {
+    width: 100%; padding: 13px 14px; border: 2px solid var(--border);
+    border-radius: 13px; font-size: 15px; font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 600; color: var(--text-primary); background: white;
+    outline: none; transition: border-color 0.2s; cursor: pointer;
+  }
+  .date-input:focus { border-color: var(--teal); }
+  .date-hint { font-size: 11px; color: var(--text-muted); padding-left: 4px; }
+  .date-divider { height: 1px; background: var(--border); margin: 2px 0; }
+
+  /* doctor button */
+  .doctor-btn {
+    width: 100%; padding: 14px 18px; background: white;
+    border: 2px dashed var(--border); border-radius: 14px;
+    font-size: 14px; font-weight: 600; color: var(--text-secondary);
+    font-family: 'Noto Sans TC', sans-serif; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center;
+    justify-content: center; gap: 8px; margin-bottom: 14px;
+  }
+  .doctor-btn:hover { border-color: var(--warn); color: var(--warn); background: var(--warn-light); }
+  .doctor-btn.active { border-style: solid; border-color: var(--warn); color: var(--warn); background: var(--warn-light); }
+
+  /* doctor panel */
+  .doctor-panel {
+    background: var(--card); border-radius: 20px;
+    box-shadow: 0 2px 20px rgba(0,80,100,0.07);
+    margin-bottom: 14px; overflow: hidden;
+    max-height: 0; transition: max-height 0.4s ease;
+  }
+  .doctor-panel.open { max-height: 500px; }
+  .doctor-panel-inner { padding: 20px; }
+  .doctor-panel-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+  .doctor-panel-sub   { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+
+  .week-section-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+
+  .week-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .week-chip {
+    padding: 8px 16px; border-radius: 99px; border: 2px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.15s; user-select: none; background: white;
+  }
+  .week-chip:hover { border-color: var(--teal-mid); color: var(--teal-dark); background: var(--teal-light); }
+  .week-chip.active { border-color: var(--teal); background: var(--teal-light); color: var(--teal-dark); }
+
+  .or-divider {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--text-muted); margin-bottom: 16px;
+  }
+  .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .pause-option {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px; border-radius: 14px; border: 2px solid var(--border);
+    cursor: pointer; transition: all 0.18s; user-select: none;
+  }
+  .pause-option:hover { border-color: var(--warn); background: var(--warn-light); }
+  .pause-option.active { border-color: var(--warn); background: var(--warn-light); }
+  .pause-check {
+    width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border);
+    background: white; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; transition: all 0.15s; font-size: 12px; color: white;
+  }
+  .pause-option.active .pause-check { background: var(--warn); border-color: var(--warn); }
+  .pause-info-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .pause-info-sub   { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .pause-option.active .pause-info-title { color: var(--warn); }
+
+  /* floating bar */
+  .float-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 20px 32px;
+    background: linear-gradient(to top, rgba(240,246,248,1) 60%, rgba(240,246,248,0));
+    z-index: 50;
+    display: flex; justify-content: center;
+  }
+  .submit-btn {
+    width: 100%; max-width: 480px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 17px;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+    color: white; border: none; border-radius: 16px;
+    font-size: 16px; font-weight: 700; font-family: 'Noto Sans TC', sans-serif;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 6px 24px rgba(42,180,192,0.45); letter-spacing: 0.3px;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(42,180,192,0.5); }
+  .submit-btn:active { transform: translateY(0); }
+
+  /* overlay */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,40,50,0.55); backdrop-filter: blur(4px);
+    z-index: 100; align-items: center; justify-content: center; padding: 24px;
+  }
+  .overlay.show { display: flex; }
+  .success-card {
+    background: white; border-radius: 24px; padding: 36px 28px;
+    text-align: center; max-width: 320px; width: 100%;
+    animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+  .suc-icon {
+    width: 68px; height: 68px; background: var(--success-light);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 18px;
+  }
+  .success-card h2 { font-size: 21px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .success-card p  { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 18px; }
+  .suc-detail {
+    background: var(--bg); border-radius: 12px; padding: 14px; margin-bottom: 20px;
+    font-size: 13px; color: var(--text-primary); font-weight: 500; line-height: 1.8; text-align: left;
+  }
+  .suc-close {
+    width: 100%; padding: 13px; background: var(--teal); color: white;
+    border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
+    font-family: 'Noto Sans TC', sans-serif; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <div>
+      <h1>回報治療完成</h1>
+      <p>請確認針次與施打日期</p>
+    </div>
+  </div>
+
+  <!-- Injection card -->
+  <div class="card">
+    <div class="card-title">針次確認</div>
+    <div class="selected-display" onclick="toggleList()">
+      <div class="sel-circle" id="selNum">2</div>
+      <div class="sel-info">
+        <div class="sel-name" id="selName">第 2 針</div>
+        <div class="sel-sub"  id="selSub">第 4 週</div>
+      </div>
+      <div class="change-btn">
+        <span id="changeBtnText">更改針次</span> <span id="chevron">▾</span>
+      </div>
+    </div>
+    <div class="expand-list" id="expandList">
+      <div class="expand-inner" id="expandInner"></div>
+    </div>
+  </div>
+
+  <!-- Date card -->
+  <div class="card">
+    <div class="card-title">日期</div>
+    <div class="date-row">
+      <div class="date-group">
+        <div class="date-group-label">
+          本次施打日期 <span class="badge badge-today">今天</span>
+        </div>
+        <div class="date-input-wrap">
+          <!-- <span class="dicon">📅</span> -->
+          <input type="date" class="date-input" id="todayDate">
+        </div>
+      </div>
+
+      <div class="date-divider"></div>
+
+      <div class="date-group">
+        <div class="date-group-label">
+          預計下次施打日期 <span class="badge badge-next" id="nextBadge">4 週後</span>
+        </div>
+        <div class="date-input-wrap">
+          <!-- <span class="dicon">📅</span> -->
+          <input type="date" class="date-input" id="nextDate">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor button -->
+  <button class="doctor-btn" id="doctorBtn" onclick="toggleDoctorPanel()">
+    🩺 醫師診斷後週期有變動嗎？
+  </button>
+
+  <!-- Doctor panel -->
+  <div class="doctor-panel" id="doctorPanel">
+    <div class="doctor-panel-inner">
+      <div class="doctor-panel-title">醫師建議調整週期</div>
+      <div class="doctor-panel-sub">請根據醫師指示選擇調整方式</div>
+
+      <div class="week-section-label">延後下次施打</div>
+      <div class="week-chips" id="weekChips">
+        <div class="week-chip" data-weeks="1"  onclick="selectWeek(this)">+ 1 週</div>
+        <div class="week-chip" data-weeks="2"  onclick="selectWeek(this)">+ 2 週</div>
+        <div class="week-chip" data-weeks="4"  onclick="selectWeek(this)">+ 4 週</div>
+        <div class="week-chip" data-weeks="8"  onclick="selectWeek(this)">+ 8 週</div>
+        <div class="week-chip" data-weeks="12" onclick="selectWeek(this)">+ 12 週</div>
+      </div>
+
+      <div class="or-divider">或</div>
+
+      <div class="pause-option" id="pauseOption" onclick="togglePause()">
+        <div class="pause-check" id="pauseCheck"></div>
+        <div>
+          <div class="pause-info-title">已大幅改善，暫停治療</div>
+          <div class="pause-info-sub">醫師評估後認為症狀已顯著緩解，暫時不需要繼續療程</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating submit -->
+<div class="float-bar">
+  <button class="submit-btn" onclick="submitReport()">✓ 確認回報完成</button>
+</div>
+
+<!-- Success overlay -->
+<div class="overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="suc-icon">🎉</div>
+    <h2>回報成功！</h2>
+    <p>您的治療紀錄已更新，請繼續保持！</p>
+    <div class="suc-detail" id="sucDetail"></div>
+    <button class="suc-close" onclick="closeSuccess()">完成</button>
+  </div>
+</div>
+
+<script>
+  const injections = [
+    { num:2, name:'第 2 針', sub:'第 4 週',            phase:'loading'      },
+    { num:3, name:'第 3 針', sub:'第 8 週',            phase:'loading'      },
+    { num:4, name:'第 4 針', sub:'第 16 週（維持期）',  phase:'maintenance'  },
+    { num:5, name:'第 5 針', sub:'第 24 週',           phase:'maintenance'  },
+    { num:6, name:'第 6 針', sub:'第 36 週',           phase:'maintenance'  },
+    { num:7, name:'第 7 針', sub:'第 48 週', phase:'maintenance' },
+  ];
+
+  let selectedInj  = 0;
+  let listOpen     = false;
+  let doctorOpen   = false;
+  let selectedWeeks = null;
+  let pauseActive  = false;
+
+  const today = new Date();
+  const toVal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const addW  = (d, w) => { const r = new Date(d); r.setDate(r.getDate() + w*7); return r; };
+  const fmtD  = v => { const d = new Date(v+'T00:00:00'); return `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`; };
+
+  document.getElementById('todayDate').value = toVal(today);
+  document.getElementById('nextDate').value  = toVal(addW(today, 4));
+
+  document.getElementById('todayDate').addEventListener('change', function() {
+    if (!selectedWeeks && !pauseActive) {
+      const d = new Date(this.value+'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, 4));
+    }
+  });
+
+  function buildList() {
+    const inner = document.getElementById('expandInner');
+    inner.innerHTML = '';
+    let lastPhase = null;
+    injections.forEach((inj, i) => {
+      if (inj.phase !== lastPhase) {
+        const ph = document.createElement('div');
+        ph.className = 'phase-divider';
+        ph.textContent = inj.phase === 'loading' ? 'Loading Phase（密集期）' : '維持期';
+        inner.appendChild(ph);
+        lastPhase = inj.phase;
+      }
+      const el = document.createElement('div');
+      el.className = 'inj-option' + (i === selectedInj ? ' active' : '');
+      el.innerHTML = `<div class="opt-num">${inj.num}</div><div><div class="opt-name">${inj.name}</div><div class="opt-sub">${inj.sub}</div></div>`;
+      el.onclick = () => pick(i);
+      inner.appendChild(el);
+    });
+  }
+  buildList();
+
+  function toggleList() {
+    listOpen = !listOpen;
+    document.getElementById('expandList').classList.toggle('open', listOpen);
+    document.getElementById('changeBtnText').textContent = listOpen ? '收起' : '更改針次';
+    document.getElementById('chevron').textContent = listOpen ? '▴' : '▾';
+    if (listOpen) buildList();
+  }
+
+  function pick(i) {
+    selectedInj = i;
+    const inj = injections[i];
+    document.getElementById('selNum').textContent  = inj.num;
+    document.getElementById('selName').textContent = inj.name;
+    document.getElementById('selSub').textContent  = inj.sub;
+    buildList();
+    listOpen = false;
+    document.getElementById('expandList').classList.remove('open');
+    document.getElementById('changeBtnText').textContent = '更改針次';
+    document.getElementById('chevron').textContent = '▾';
+  }
+
+  function toggleDoctorPanel() {
+    doctorOpen = !doctorOpen;
+    document.getElementById('doctorPanel').classList.toggle('open', doctorOpen);
+    document.getElementById('doctorBtn').classList.toggle('active', doctorOpen);
+  }
+
+  function selectWeek(el) {
+    if (pauseActive) { pauseActive = false; document.getElementById('pauseOption').classList.remove('active'); document.getElementById('pauseCheck').textContent = ''; }
+    const w = parseInt(el.dataset.weeks);
+    if (selectedWeeks === w) {
+      selectedWeeks = null;
+      document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+      const d = new Date(document.getElementById('todayDate').value+'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, 4));
+      document.getElementById('nextBadge').textContent = '4 週後';
+    } else {
+      selectedWeeks = w;
+      document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      const d = new Date(document.getElementById('todayDate').value+'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, 4 + w));
+      document.getElementById('nextBadge').textContent = `延後 +${w} 週`;
+    }
+  }
+
+  function togglePause() {
+    selectedWeeks = null;
+    document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+    pauseActive = !pauseActive;
+    document.getElementById('pauseOption').classList.toggle('active', pauseActive);
+    document.getElementById('pauseCheck').textContent = pauseActive ? '✓' : '';
+    if (pauseActive) {
+      document.getElementById('nextDate').value = '';
+      document.getElementById('nextBadge').textContent = '暫停';
+      document.getElementById('nextBadge').style.background = '#fee2e2';
+      document.getElementById('nextBadge').style.color = '#dc2626';
+    } else {
+      const d = new Date(document.getElementById('todayDate').value+'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, 4));
+      document.getElementById('nextBadge').textContent = '4 週後';
+      document.getElementById('nextBadge').style.background = '';
+      document.getElementById('nextBadge').style.color = '';
+    }
+  }
+
+  function submitReport() {
+    const todayVal = document.getElementById('todayDate').value;
+    const nextVal  = document.getElementById('nextDate').value;
+    if (!todayVal) { alert('請選擇施打日期'); return; }
+
+    const inj = injections[selectedInj];
+    let detail = `<strong>${inj.name}</strong>（${inj.sub}）<br>施打日期：${fmtD(todayVal)}`;
+
+    if (pauseActive) {
+      detail += `<br><br>⏸ 醫師評估：症狀已大幅改善，<strong>暫停治療</strong>`;
+    } else if (selectedWeeks) {
+      detail += `<br>下次施打：${fmtD(nextVal)}（延後 ${selectedWeeks} 週）`;
+    } else {
+      detail += nextVal ? `<br>下次預計：${fmtD(nextVal)}` : '';
+    }
+
+    document.getElementById('sucDetail').innerHTML = detail;
+    document.getElementById('successOverlay').classList.add('show');
+  }
+
+  function closeSuccess() {
+    document.getElementById('successOverlay').classList.remove('show');
+  }
+</script>
+</body>
+</html>
