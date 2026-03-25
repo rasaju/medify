@@ -87,7 +87,7 @@
     overflow: hidden; max-height: 0;
     transition: max-height 0.35s ease, opacity 0.25s ease; opacity: 0;
   }
-  .expand-list.open { max-height: 600px; opacity: 1; }
+  .expand-list.open { max-height: 1200px; opacity: 1; }
   .expand-inner { padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
 
   .inj-option {
@@ -108,12 +108,6 @@
   .opt-sub  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
   .inj-option.active .opt-name { color: var(--teal-dark); }
 
-  .phase-divider {
-    font-size: 11px; color: var(--text-muted); font-weight: 500;
-    display: flex; align-items: center; gap: 8px; padding: 4px 2px 2px;
-  }
-  .phase-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
   /* dates */
   .date-row { display: flex; flex-direction: column; gap: 14px; }
   .date-group { display: flex; flex-direction: column; gap: 6px; }
@@ -128,10 +122,6 @@
   .badge-next  { background: var(--warn-light);  color: var(--warn); }
 
   .date-input-wrap { position: relative; }
-  .dicon {
-    position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%); font-size: 16px; pointer-events: none;
-  }
   .date-input {
     width: 100%; padding: 13px 14px; border: 2px solid var(--border);
     border-radius: 13px; font-size: 15px; font-family: 'Noto Sans TC', sans-serif;
@@ -269,10 +259,10 @@
   <div class="card">
     <div class="card-title">針次確認</div>
     <div class="selected-display" onclick="toggleList()">
-      <div class="sel-circle" id="selNum">2</div>
+      <div class="sel-circle" id="selNum">1</div>
       <div class="sel-info">
-        <div class="sel-name" id="selName">第 2 針</div>
-        <div class="sel-sub"  id="selSub">第 4 週</div>
+        <div class="sel-name" id="selName">第 1 針</div>
+        <div class="sel-sub"  id="selSub">第 1 週</div>
       </div>
       <div class="change-btn">
         <span id="changeBtnText">更改針次</span> <span id="chevron">▾</span>
@@ -292,7 +282,6 @@
           本次施打日期 <span class="badge badge-today">今天</span>
         </div>
         <div class="date-input-wrap">
-          <!-- <span class="dicon">📅</span> -->
           <input type="date" class="date-input" id="todayDate">
         </div>
       </div>
@@ -301,10 +290,9 @@
 
       <div class="date-group">
         <div class="date-group-label">
-          預計下次施打日期 <span class="badge badge-next" id="nextBadge">4 週後</span>
+          預計下次施打日期 <span class="badge badge-next" id="nextBadge">3 週後</span>
         </div>
         <div class="date-input-wrap">
-          <!-- <span class="dicon">📅</span> -->
           <input type="date" class="date-input" id="nextDate">
         </div>
       </div>
@@ -362,48 +350,40 @@
 </div>
 
 <script>
-  const injections = [
-    { num:2, name:'第 2 針', sub:'第 4 週',            phase:'loading'      },
-    { num:3, name:'第 3 針', sub:'第 8 週',            phase:'loading'      },
-    { num:4, name:'第 4 針', sub:'第 16 週（維持期）',  phase:'maintenance'  },
-    { num:5, name:'第 5 針', sub:'第 24 週',           phase:'maintenance'  },
-    { num:6, name:'第 6 針', sub:'第 36 週',           phase:'maintenance'  },
-    { num:7, name:'第 7 針', sub:'第 48 週', phase:'maintenance' },
-  ];
+  // 18 injections, every 3 weeks (Week 1, 4, 7, 10, ...)
+  const injections = Array.from({ length: 18 }, (_, i) => ({
+    num: i + 1,
+    name: `第 ${i + 1} 針`,
+    sub: `第 ${i * 3 + 1} 週`,
+  }));
 
-  let selectedInj  = 0;
-  let listOpen     = false;
-  let doctorOpen   = false;
+  let selectedInj   = 0;
+  let listOpen      = false;
+  let doctorOpen    = false;
   let selectedWeeks = null;
-  let pauseActive  = false;
+  let pauseActive   = false;
+
+  const CYCLE_WEEKS = 3;
 
   const today = new Date();
   const toVal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const addW  = (d, w) => { const r = new Date(d); r.setDate(r.getDate() + w*7); return r; };
-  const fmtD  = v => { const d = new Date(v+'T00:00:00'); return `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`; };
+  const addW  = (d, w) => { const r = new Date(d); r.setDate(r.getDate() + w * 7); return r; };
+  const fmtD  = v => { const d = new Date(v + 'T00:00:00'); return `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`; };
 
   document.getElementById('todayDate').value = toVal(today);
-  document.getElementById('nextDate').value  = toVal(addW(today, 4));
+  document.getElementById('nextDate').value  = toVal(addW(today, CYCLE_WEEKS));
 
   document.getElementById('todayDate').addEventListener('change', function() {
     if (!selectedWeeks && !pauseActive) {
-      const d = new Date(this.value+'T00:00:00');
-      document.getElementById('nextDate').value = toVal(addW(d, 4));
+      const d = new Date(this.value + 'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, CYCLE_WEEKS));
     }
   });
 
   function buildList() {
     const inner = document.getElementById('expandInner');
     inner.innerHTML = '';
-    let lastPhase = null;
     injections.forEach((inj, i) => {
-      if (inj.phase !== lastPhase) {
-        const ph = document.createElement('div');
-        ph.className = 'phase-divider';
-        ph.textContent = inj.phase === 'loading' ? 'Loading Phase（密集期）' : '維持期';
-        inner.appendChild(ph);
-        lastPhase = inj.phase;
-      }
       const el = document.createElement('div');
       el.className = 'inj-option' + (i === selectedInj ? ' active' : '');
       el.innerHTML = `<div class="opt-num">${inj.num}</div><div><div class="opt-name">${inj.name}</div><div class="opt-sub">${inj.sub}</div></div>`;
@@ -412,6 +392,14 @@
     });
   }
   buildList();
+
+  // Init display to first injection
+  (function() {
+    const inj = injections[0];
+    document.getElementById('selNum').textContent  = inj.num;
+    document.getElementById('selName').textContent = inj.name;
+    document.getElementById('selSub').textContent  = inj.sub;
+  })();
 
   function toggleList() {
     listOpen = !listOpen;
@@ -441,20 +429,24 @@
   }
 
   function selectWeek(el) {
-    if (pauseActive) { pauseActive = false; document.getElementById('pauseOption').classList.remove('active'); document.getElementById('pauseCheck').textContent = ''; }
+    if (pauseActive) {
+      pauseActive = false;
+      document.getElementById('pauseOption').classList.remove('active');
+      document.getElementById('pauseCheck').textContent = '';
+    }
     const w = parseInt(el.dataset.weeks);
     if (selectedWeeks === w) {
       selectedWeeks = null;
       document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
-      const d = new Date(document.getElementById('todayDate').value+'T00:00:00');
-      document.getElementById('nextDate').value = toVal(addW(d, 4));
-      document.getElementById('nextBadge').textContent = '4 週後';
+      const d = new Date(document.getElementById('todayDate').value + 'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, CYCLE_WEEKS));
+      document.getElementById('nextBadge').textContent = `${CYCLE_WEEKS} 週後`;
     } else {
       selectedWeeks = w;
       document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
-      const d = new Date(document.getElementById('todayDate').value+'T00:00:00');
-      document.getElementById('nextDate').value = toVal(addW(d, 4 + w));
+      const d = new Date(document.getElementById('todayDate').value + 'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, CYCLE_WEEKS + w));
       document.getElementById('nextBadge').textContent = `延後 +${w} 週`;
     }
   }
@@ -471,9 +463,9 @@
       document.getElementById('nextBadge').style.background = '#fee2e2';
       document.getElementById('nextBadge').style.color = '#dc2626';
     } else {
-      const d = new Date(document.getElementById('todayDate').value+'T00:00:00');
-      document.getElementById('nextDate').value = toVal(addW(d, 4));
-      document.getElementById('nextBadge').textContent = '4 週後';
+      const d = new Date(document.getElementById('todayDate').value + 'T00:00:00');
+      document.getElementById('nextDate').value = toVal(addW(d, CYCLE_WEEKS));
+      document.getElementById('nextBadge').textContent = `${CYCLE_WEEKS} 週後`;
       document.getElementById('nextBadge').style.background = '';
       document.getElementById('nextBadge').style.color = '';
     }
