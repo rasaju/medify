@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Medify 產品流程逐步揭露</title>
+    <meta name="description" content="Medify 產品流程一頁式互動簡報，點擊逐步揭露病患旅程與對應產品介面。" />
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700,900&f[]=general-sans@400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #edf7fb;
+        --paper: #ffffff;
+        --ink: #123746;
+        --muted: #6d8188;
+        --line: #dce9ed;
+        --blue: #1674aa;
+        --teal: #4eb1c7;
+        --mint: #eaf8f8;
+        --amber: #f7b955;
+        --shadow: 0 28px 80px rgba(22, 70, 88, 0.14);
+        --font-display: "Satoshi", "Noto Sans TC", sans-serif;
+        --font-body: "General Sans", "Noto Sans TC", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at 8% 10%, rgba(78, 177, 199, 0.18), transparent 28%),
+          linear-gradient(135deg, #edf7fb 0%, #ffffff 56%, #fff5e4 100%);
+        color: var(--ink);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .slide {
+        position: relative;
+        width: min(1280px, calc(100vw - 48px));
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border: 1px solid rgba(18, 55, 70, 0.08);
+        border-radius: 30px;
+        background:
+          radial-gradient(circle at 92% 12%, rgba(247, 185, 85, 0.20), transparent 26%),
+          linear-gradient(135deg, rgba(255,255,255,0.96), rgba(247,252,253,0.96));
+        box-shadow: var(--shadow);
+      }
+
+      .slide-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        height: 100%;
+        padding: 48px 62px 42px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 14px;
+        color: #16758d;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--teal);
+      }
+
+      h1 {
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 48px;
+        font-weight: 900;
+        letter-spacing: -0.045em;
+        line-height: 1.06;
+      }
+
+      .hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 9px;
+        padding: 11px 16px;
+        border: 1px solid rgba(22, 116, 170, 0.12);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.72);
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .stage-dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .stage-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #cbdce2;
+        transition: width 260ms ease, background 260ms ease;
+      }
+
+      body[data-step="0"] .stage-dot:nth-child(1),
+      body[data-step="1"] .stage-dot:nth-child(2),
+      body[data-step="2"] .stage-dot:nth-child(3),
+      body[data-step="3"] .stage-dot:nth-child(4),
+      body[data-step="4"] .stage-dot:nth-child(5) {
+        width: 28px;
+        background: var(--blue);
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 0.94fr 1.06fr;
+        gap: 36px;
+        min-height: 0;
+        padding-top: 30px;
+      }
+
+      .journey {
+        display: grid;
+        align-content: center;
+        gap: 13px;
+      }
+
+      .step-card {
+        position: relative;
+        display: grid;
+        grid-template-columns: 58px 1fr;
+        gap: 18px;
+        align-items: center;
+        min-height: 86px;
+        padding: 16px 18px;
+        border: 1px solid rgba(18, 55, 70, 0.07);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: 0 18px 48px rgba(24, 81, 97, 0.08);
+        opacity: 0.56;
+        transform: translateX(0) scale(0.985);
+        filter: grayscale(1);
+        transition: opacity 320ms ease, transform 320ms ease, filter 320ms ease, box-shadow 320ms ease;
+      }
+
+      .step-card::after {
+        content: "";
+        position: absolute;
+        left: 53px;
+        bottom: -14px;
+        width: 2px;
+        height: 14px;
+        background: var(--line);
+      }
+
+      .step-card:last-child::after {
+        display: none;
+      }
+
+      .num {
+        display: grid;
+        place-items: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        background: #edf3f6;
+        color: #7d929a;
+        font-family: var(--font-display);
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .step-card h2 {
+        margin: 0 0 6px;
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 25px;
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+      }
+
+      .step-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.45;
+      }
+
+      body[data-step="0"] .step-card[data-stage="1"],
+      body[data-step="1"] .step-card[data-stage="2"],
+      body[data-step="2"] .step-card[data-stage="3"],
+      body[data-step="3"] .step-card[data-stage="4"],
+      body[data-step="4"] .step-card[data-stage="5"] {
+        opacity: 1;
+        transform: translateX(10px) scale(1);
+        filter: none;
+        box-shadow: 0 22px 54px rgba(22, 116, 170, 0.14);
+      }
+
+      body[data-step="0"] .step-card[data-stage="1"] .num,
+      body[data-step="1"] .step-card[data-stage="2"] .num,
+      body[data-step="2"] .step-card[data-stage="3"] .num,
+      body[data-step="3"] .step-card[data-stage="4"] .num,
+      body[data-step="4"] .step-card[data-stage="5"] .num {
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        color: #fff;
+        box-shadow: 0 12px 28px rgba(22, 116, 170, 0.24);
+      }
+
+      body[data-step="3"] .step-card[data-stage="4"] .num,
+      body[data-step="4"] .step-card[data-stage="5"] .num {
+        background: linear-gradient(135deg, #f7b955, #ef9f30);
+      }
+
+      .visual {
+        position: relative;
+        display: grid;
+        min-height: 0;
+        align-items: center;
+      }
+
+      .visual-card {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 16px;
+        padding: 22px;
+        border: 1px solid rgba(18, 55, 70, 0.08);
+        border-radius: 34px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: 0 18px 52px rgba(22, 70, 88, 0.10);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(18px) scale(0.985);
+        transition: opacity 340ms ease, transform 340ms ease;
+      }
+
+      body[data-step="0"] .visual-card[data-visual="0"],
+      body[data-step="1"] .visual-card[data-visual="1"],
+      body[data-step="2"] .visual-card[data-visual="1"],
+      body[data-step="3"] .visual-card[data-visual="2"],
+      body[data-step="4"] .visual-card[data-visual="2"] {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+
+      .visual-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .visual-title strong {
+        color: var(--ink);
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+
+      .visual-title span {
+        padding: 8px 13px;
+        border-radius: 999px;
+        background: var(--mint);
+        color: #24798c;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .shot-wrap {
+        display: grid;
+        place-items: center;
+        min-height: 0;
+        border-radius: 26px;
+        background: linear-gradient(180deg, #f7fcfd, #ffffff);
+        overflow: hidden;
+      }
+
+      .shot-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 18px 28px rgba(12, 46, 58, 0.10));
+      }
+
+      .cta {
+        position: absolute;
+        right: 46px;
+        bottom: 34px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 18px;
+        border: 0;
+        border-radius: 999px;
+        background: #123746;
+        color: #fff;
+        font: 800 15px var(--font-body);
+        cursor: pointer;
+        box-shadow: 0 14px 30px rgba(18, 55, 70, 0.24);
+      }
+
+      .cta::after {
+        content: "→";
+        font-size: 19px;
+      }
+
+      body[data-step="4"] .cta::after {
+        content: "↺";
+      }
+
+      @media print {
+        body {
+          padding: 0;
+          background: #fff;
+        }
+
+        .slide {
+          width: 100vw;
+          border-radius: 0;
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body data-step="0">
+    <main class="slide" id="slide" aria-label="Medify 產品流程逐步揭露簡報">
+      <div class="slide-inner">
+        <header class="header">
+          <div>
+            <p class="eyebrow">Product flow</p>
+            <h1>Medify 陪伴病患完成治療決策</h1>
+          </div>
+          <div>
+            <div class="stage-dots" aria-hidden="true">
+              <span class="stage-dot"></span>
+              <span class="stage-dot"></span>
+              <span class="stage-dot"></span>
+              <span class="stage-dot"></span>
+              <span class="stage-dot"></span>
+            </div>
+            <div class="hint">點擊揭露下一階段</div>
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="journey" aria-label="病患流程">
+            <article class="step-card" data-stage="1">
+              <div class="num">1</div>
+              <div>
+                <h2>接觸病患</h2>
+                <p>Medify 衛教：主題頁 + 文章</p>
+              </div>
+            </article>
+
+            <article class="step-card" data-stage="2">
+              <div class="num">2</div>
+              <div>
+                <h2>猶豫比較</h2>
+                <p>個人化 SDM 報告</p>
+              </div>
+            </article>
+
+            <article class="step-card" data-stage="3">
+              <div class="num">3</div>
+              <div>
+                <h2>決定治療</h2>
+                <p>AI 助教協助理解與提問</p>
+              </div>
+            </article>
+
+            <article class="step-card" data-stage="4">
+              <div class="num">4</div>
+              <div>
+                <h2>養成回診</h2>
+                <p>簡訊提醒 / 家屬通知</p>
+              </div>
+            </article>
+
+            <article class="step-card" data-stage="5">
+              <div class="num">5</div>
+              <div>
+                <h2>穩定治療</h2>
+                <p>回診追蹤 / 療程完成率</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="visual" aria-live="polite">
+            <article class="visual-card" data-visual="0">
+              <div class="visual-title">
+                <strong>Medify 衛教 — 主題頁 + 文章</strong>
+                <span>接觸病患</span>
+              </div>
+              <div class="shot-wrap">
+              <img src="img/流程說明_附圖1.png">    
+              </div>
+            </article>
+
+            <article class="visual-card" data-visual="1">
+              <div class="visual-title">
+                <strong>個人化 SDM 報告 + AI 助教</strong>
+                <span>猶豫比較 → 決定治療</span>
+              </div>
+              <div class="shot-wrap">
+              <img src="img/流程說明_附圖2.png">  
+              </div>
+            </article>
+
+            <article class="visual-card" data-visual="2">
+              <div class="visual-title">
+                <strong>簡訊提醒 + 回診確認</strong>
+                <span>養成回診 → 穩定治療</span>
+              </div>
+              <div class="shot-wrap">
+                <img src="img/流程說明_附圖3.png">    
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+      <button class="cta" type="button" id="nextBtn">下一階段</button>
+    </main>
+
+    <script>
+      const body = document.body;
+      const slide = document.getElementById("slide");
+      const btn = document.getElementById("nextBtn");
+      let step = 0;
+
+      function render() {
+        body.dataset.step = String(step);
+        btn.textContent = step === 4 ? "重新播放" : "下一階段";
+      }
+
+      function advance(event) {
+        if (event.target.closest("a")) return;
+        step = step >= 4 ? 0 : step + 1;
+        render();
+      }
+
+      slide.addEventListener("click", advance);
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === " " || event.key === "Enter") {
+          advance(event);
+        }
+        if (event.key === "ArrowLeft") {
+          step = Math.max(0, step - 1);
+          render();
+        }
+      });
+      render();
+    </script>
+  </body>
+</html>
