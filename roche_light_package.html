@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roche羅氏輕量方案</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand palette from CI guideline */
+    --primary-1: #44BDDB;
+    --primary-2: #4A5BA8;
+    --sky-1: #0683AA;
+    --sky-2: #1793BA;
+    --sky-3: #28A3CA;
+    --sky-4: #5BB1CC;
+    --sky-8: #CDEBF1;
+    --sky-9: #EDF7F9;
+    --gray-1: #2C2C2C;
+    --gray-3: #636363;
+    --gray-5: #AEAEAE;
+    --gray-6: #BFBFBF;
+    --gray-7: #E8E8E8;
+    --gray-8: #F7F7F7;
+    --gray-9: #FFFFFF;
+    --success: #76C0A5;
+    --danger: #F56C6C;
+    --bg: #F0F8FB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--gray-1);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle top gradient bar */
+  body::before {
+    content: '';
+    display: block;
+    height: 4px;
+    background: linear-gradient(90deg, var(--sky-1), var(--primary-1), var(--primary-2));
+  }
+
+  /* Soft background blobs */
+  .bg-blob {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-blob-1 {
+    top: -180px; left: -180px;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(68,189,219,0.12) 0%, transparent 70%);
+  }
+  .bg-blob-2 {
+    bottom: -120px; right: -120px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(74,91,168,0.08) 0%, transparent 70%);
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 56px 24px 72px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 52px;
+    animation: fadeDown 0.7s ease both;
+  }
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--sky-2);
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .header h1 {
+    font-size: clamp(26px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--sky-1);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .header .sub {
+    font-size: 13px;
+    color: var(--gray-5);
+    letter-spacing: 1px;
+  }
+  .divider {
+    width: 40px; height: 2px;
+    background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
+    margin: 18px auto 0;
+    border-radius: 2px;
+  }
+
+  /* ── Plans Grid ── */
+  .plans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+    align-items: start;
+  }
+  @media (max-width: 620px) { .plans { grid-template-columns: 1fr; } }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px 24px 24px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.7s ease both;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    border: 1px solid var(--gray-7);
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(6,131,170,0.12);
+  }
+
+  .card-a { animation-delay: 0.05s; }
+  .card-b { animation-delay: 0.15s; }
+
+  /* Top accent stripe */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 18px 18px 0 0;
+  }
+  .card-a::before { background: linear-gradient(90deg, var(--sky-1), var(--primary-1)); }
+  .card-b::before { background: linear-gradient(90deg, var(--primary-2), var(--sky-3)); }
+
+  /* Faint watermark corner */
+  .card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: 0.05;
+  }
+  .card-a::after { background: var(--primary-1); }
+  .card-b::after { background: var(--primary-2); }
+
+  .plan-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .card-a .plan-tag { background: var(--sky-9); color: var(--sky-1); border: 1px solid var(--sky-8); }
+  .card-b .plan-tag { background: #eef0f8; color: var(--primary-2); border: 1px solid #d0d5ee; }
+
+  .plan-title {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 18px;
+    letter-spacing: -0.3px;
+  }
+  .card-a .plan-title { color: var(--sky-1); }
+  .card-b .plan-title { color: var(--primary-2); }
+
+  /* Total box */
+  .total-box {
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .card-a .total-box { background: var(--sky-9); border: 1px solid var(--sky-8); }
+  .card-b .total-box { background: #eef0f8; border: 1px solid #d0d5ee; }
+
+  .total-label {
+    font-size: 9.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-5);
+    font-weight: 500;
+  }
+  .total-amount {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  .card-a .total-amount { color: var(--sky-1); }
+  .card-b .total-amount { color: var(--primary-2); }
+  .total-sub {
+    font-size: 10.5px;
+    color: var(--gray-5);
+    margin-top: 2px;
+  }
+
+  .section-label {
+    font-size: 9.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gray-5);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  /* Feature row */
+  .feature {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 10px;
+    align-items: start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-7);
+  }
+  .feature:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .f-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .f-icon .material-symbols-outlined {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  }
+  .card-a .f-icon { background: var(--sky-9); color: var(--sky-2); }
+  .card-b .f-icon { background: #eef0f8; color: var(--primary-2); }
+
+  .f-body { min-width: 0; }
+  .f-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-1);
+    line-height: 1.45;
+  }
+  .f-meta {
+    font-size: 11px;
+    color: var(--gray-5);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  .f-right { text-align: right; flex-shrink: 0; padding-top: 2px; }
+  .f-price {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-1);
+    white-space: nowrap;
+  }
+  .f-price-orig {
+    font-size: 11px;
+    color: var(--gray-6);
+    text-decoration: line-through;
+    display: block;
+    margin-bottom: 1px;
+  }
+  .f-price-disc {
+    font-size: 10px;
+    color: var(--sky-2);
+    font-weight: 500;
+    display: block;
+    margin-top: 1px;
+  }
+  .f-qty {
+    font-size: 10.5px;
+    color: var(--gray-5);
+    margin-top: 3px;
+    white-space: nowrap;
+  }
+
+  .badge-free {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #e6f9f2;
+    color: #1a8a5c;
+    border: 1px solid #b3e8d3;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* Note */
+  .note {
+    background: #fff;
+    border: 1px solid var(--gray-7);
+    border-radius: 12px;
+    padding: 13px 20px;
+    font-size: 12px;
+    color: var(--gray-3);
+    line-height: 1.7;
+    text-align: center;
+    animation: fadeUp 0.7s ease 0.3s both;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .note .material-symbols-outlined {
+    font-size: 16px;
+    color: var(--gray-5);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    flex-shrink: 0;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<div class="page-wrap">
+
+  <header class="header">
+    <p class="eyebrow">Roche 羅氏提案 · 方案更新</p>
+    <h1>選擇最適合的數位醫療方案</h1>
+    <p class="sub">PRD · 年度提案比較</p>
+    <div class="divider"></div>
+  </header>
+
+  <div class="plans">
+
+    <!-- ══ Plan A 純衛教方案 ══ -->
+    <div class="card card-a">
+      <div class="plan-tag">Plan A</div>
+      <div class="plan-title">純衛教<br>方案</div>
+
+      <div class="total-box">
+        <div class="total-label">包含 AI Token 總計</div>
+        <div class="total-amount">$245,000</div>
+        <div class="total-sub">新台幣</div>
+      </div>
+
+      <p class="section-label">包含項目</p>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">person</span></div>
+        <div class="f-body">
+          <div class="f-name">純衛教醫師帳號</div>
+          <div class="f-meta">每人每年</div>
+        </div>
+        <div class="f-right">
+          <div class="f-price">$12,000</div>
+          <div class="f-qty">× 10 人</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">description</span></div>
+        <div class="f-body">
+          <div class="f-name">衛教內容包</div>
+          <div class="f-meta">每篇文章</div>
+        </div>
+        <div class="f-right">
+          <span class="f-price-orig">$50,000</span>
+          <div class="f-price">$35,000</div>
+          <span class="f-price-disc">優惠 7 折</span>
+          <div class="f-qty">× 5 篇</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="f-body">
+          <div class="f-name">Chatbot AI 解答病患提問</div>
+          <div class="f-meta">每人每年</div>
+        </div>
+        <div class="f-right">
+          <span class="f-price-orig">$100,000</span>
+          <span class="badge-free">免費贈送</span>
+          <div class="f-qty">× 10 人</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">token</span></div>
+        <div class="f-body">
+          <div class="f-name">AI Token 吃到飽</div>
+          <div class="f-meta">用於 Chatbot AI · 每人每年</div>
+        </div>
+        <div class="f-right">
+          <div class="f-price">$7,000</div>
+          <div class="f-qty">× 10 人</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ Plan B SDM 互動方案 ══ -->
+    <div class="card card-b">
+      <div class="plan-tag">Plan B</div>
+      <div class="plan-title">SDM 互動<br>方案</div>
+
+      <div class="total-box">
+        <div class="total-label">包含 AI Token 總計</div>
+        <div class="total-amount">$693,000</div>
+        <div class="total-sub">新台幣</div>
+      </div>
+
+      <p class="section-label">包含項目</p>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">stethoscope</span></div>
+        <div class="f-body">
+          <div class="f-name">互動系統醫師帳號</div>
+          <div class="f-meta">每人每年</div>
+        </div>
+        <div class="f-right">
+          <div class="f-price">$18,000</div>
+          <div class="f-qty">× 10 人</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">description</span></div>
+        <div class="f-body">
+          <div class="f-name">衛教內容包</div>
+          <div class="f-meta">每篇文章</div>
+        </div>
+        <div class="f-right">
+          <span class="f-price-orig">$50,000</span>
+          <div class="f-price">$35,000</div>
+          <span class="f-price-disc">優惠 7 折</span>
+          <div class="f-qty">× 5 篇</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">touch_app</span></div>
+        <div class="f-body">
+          <div class="f-name">SDM 互動內容製作</div>
+          <div class="f-meta">完整功能含 AI 個人化報告<br>與療程簡訊提醒等 · 單一主題</div>
+        </div>
+        <div class="f-right">
+          <div class="f-price">$150,000</div>
+          <div class="f-qty">× 1 主題</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">bar_chart</span></div>
+        <div class="f-body">
+          <div class="f-name">每季數據追蹤報告</div>
+          <div class="f-meta">每年</div>
+        </div>
+        <div class="f-right">
+          <div class="f-price">$8,000</div>
+          <div class="f-qty">× 1 份</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">smart_toy</span></div>
+        <div class="f-body">
+          <div class="f-name">Chatbot AI 解答病患提問</div>
+          <div class="f-meta">每人每年</div>
+        </div>
+        <div class="f-right">
+          <span class="f-price-orig">$100,000</span>
+          <span class="badge-free">免費贈送</span>
+          <div class="f-qty">× 10 人</div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="f-icon"><span class="material-symbols-outlined">bolt</span></div>
+        <div class="f-body">
+          <div class="f-name">AI Token 吃到飽</div>
+          <div class="f-meta">用於 Chatbot AI 與 AI 個人化報告<br>每人每年</div>
+        </div>
+        <div class="f-right">
+          <div class="f-price">$18,000</div>
+          <div class="f-qty">× 10 人</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="material-symbols-outlined">info</span>
+    備註：上述價格不含簡訊費，每則 NT$ 1。
+  </div>
+
+</div>
+</body>
+</html>
