@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roche羅氏輕量方案</title>
+<title>Roche 羅氏 方案提案</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -283,11 +283,23 @@
     margin-bottom: 1px;
   }
   .f-price-disc {
-    font-size: 10px;
-    color: var(--sky-2);
-    font-weight: 500;
-    display: block;
-    margin-top: 1px;
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .card-a .f-price-disc {
+    background: var(--sky-9);
+    color: var(--sky-1);
+    border: 1px solid var(--sky-8);
+  }
+  .card-b .f-price-disc {
+    background: #eef0f8;
+    color: var(--primary-2);
+    border: 1px solid #d0d5ee;
   }
   .f-qty {
     font-size: 10.5px;
@@ -305,7 +317,6 @@
     background: #e6f9f2;
     color: #1a8a5c;
     border: 1px solid #b3e8d3;
-    text-transform: uppercase;
     font-weight: 600;
     margin-top: 2px;
   }
@@ -353,7 +364,6 @@
   <header class="header">
     <p class="eyebrow">Roche 羅氏提案 · 方案更新</p>
     <h1>選擇最適合的數位醫療方案</h1>
-    <p class="sub">PRD · 年度提案比較</p>
     <div class="divider"></div>
   </header>
 
@@ -362,12 +372,12 @@
     <!-- ══ Plan A 純衛教方案 ══ -->
     <div class="card card-a">
       <div class="plan-tag">Plan A</div>
-      <div class="plan-title">純衛教</div>
+      <div class="plan-title">純衛教方案</div>
 
       <div class="total-box">
         <div class="total-label">包含 AI Token 總計</div>
-        <div class="total-amount">$365,000/div>
-        <div class="total-sub">NTD</div>
+        <div class="total-amount">$245,000</div>
+        <div class="total-sub">新台幣</div>
       </div>
 
       <p class="section-label">包含項目</p>
@@ -428,12 +438,12 @@
     <!-- ══ Plan B SDM 互動方案 ══ -->
     <div class="card card-b">
       <div class="plan-tag">Plan B</div>
-      <div class="plan-title">SDM 互動</div>
+      <div class="plan-title">SDM 互動方案</div>
 
       <div class="total-box">
         <div class="total-label">包含 AI Token 總計</div>
         <div class="total-amount">$693,000</div>
-        <div class="total-sub">NTD</div>
+        <div class="total-sub">新台幣</div>
       </div>
 
       <p class="section-label">包含項目</p>
