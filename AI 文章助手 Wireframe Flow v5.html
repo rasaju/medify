@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<title>AI 文章助手 — 方案 A · v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f7f5; --grid:#e6e6e2;
+    --ink:#1f2329; --ink-2:#4a5159; --muted:#8a8f97;
+    --line:#c9ccd1; --line-2:#dfe1e4;
+    --ai:#5b8def; --ai-soft:#e8f0ff; --ai-ink:#1a4fb8;
+    --note-bg:#fffdf3; --note-border:#e8e2c4; --note-ink:#6b5a1f;
+    --warn:#e07a3c;
+    --SW: 1280px; --SH: 720px;
+    --SCALE: 0.36;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter','Noto Sans TC',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{
+    background-image:radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0);
+    background-size:20px 20px; min-height:100vh; padding:48px 40px 80px; overflow-x:auto;
+  }
+  .wrap{min-width:2580px;max-width:2580px;margin:0 auto}
+
+  .doc-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+  .doc-title{font-size:26px;font-weight:600;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+  .doc-title .tag{font-size:12px;font-weight:600;background:#fff3b0;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .doc-sub{font-size:14px;color:var(--ink-2);margin-top:8px;max-width:880px;line-height:1.55}
+
+  /* row banner */
+  .plan-row{margin-top:36px}
+  .plan-row:first-of-type{margin-top:8px}
+  .plan-head{
+    display:flex;align-items:center;gap:10px;margin:0 0 18px;
+    font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:.06em;text-transform:uppercase
+  }
+  .plan-head .badge{background:var(--ai);color:#fff;padding:3px 10px;border-radius:6px;font-size:12px;letter-spacing:.04em}
+  .plan-head.b .badge{background:#a26bff}
+  .plan-head .ttl{font-size:16px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:600}
+  .plan-head .desc{font-size:12px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+
+  /* canvas — 5 columns for Plan A */
+  .canvas-a{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:0 60px;padding-top:34px}
+  .col{display:flex;flex-direction:column;gap:18px}
+
+  /* simple, plain note — direct-edit friendly */
+  .note{
+    width: calc(var(--SW) * var(--SCALE));
+    background:var(--note-bg);
+    border:1px solid var(--note-border);
+    border-radius:8px;
+    padding:12px 14px 14px;
+    font-size:13px;line-height:1.6;color:var(--ink);
+  }
+  .note .nh{
+    display:block;font-size:11px;font-weight:600;color:var(--note-ink);letter-spacing:.04em;
+    text-transform:uppercase;margin-bottom:6px;
+  }
+  .note p{margin:0 0 6px}
+  .note p:last-child{margin-bottom:0}
+  .note ul{margin:4px 0 0;padding-left:18px}
+  .note ul li{margin-bottom:2px}
+
+  /* fixed-size screen frame with scaled preview */
+  .scn{
+    position:relative;
+    width: calc(var(--SW) * var(--SCALE));
+    height: calc(var(--SH) * var(--SCALE));
+    border:1px solid var(--line);border-radius:10px;background:#fff;
+    box-shadow:0 8px 24px -16px rgba(0,0,0,.12);
+  }
+  .scn-inner{
+    position:absolute;left:0;top:0;
+    width:var(--SW);height:var(--SH);
+    transform:scale(var(--SCALE));transform-origin:top left;
+    overflow:hidden;border-radius:10px;
+  }
+  .scn-label{
+    position:absolute;top:-12px;left:14px;background:#fff;border:1px solid var(--line);
+    border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;z-index:3;
+  }
+  .scn-label .num{width:18px;height:18px;border-radius:4px;background:var(--ink);color:#fff;
+    display:inline-grid;place-items:center;font-size:11px;font-weight:600}
+  .scn-label.phase .num{background:var(--ai)}
+  .scn-label .phase-tag{
+    background:#fff3b0;border:1px solid #e8d57a;color:#7a5d0f;
+    font-size:10px;padding:1px 6px;border-radius:4px;letter-spacing:.04em;
+  }
+  .scn-label .phase-tag.p2{background:#e8f0ff;border-color:#c6d8ff;color:var(--ai-ink)}
+  .scn-size{
+    position:absolute;right:8px;bottom:6px;font-size:10px;color:var(--muted);font-feature-settings:"tnum";
+    background:#fff;border:1px solid var(--line-2);border-radius:4px;padding:1px 6px;z-index:3;
+  }
+
+  /* ====== App chrome (rendered at 1280x720) ====== */
+  .app{display:grid;grid-template-columns:70px 240px 1fr;gap:14px;padding:18px;height:100%}
+  .nav{border:1px solid var(--line);border-radius:10px;padding:14px 8px;
+    display:flex;flex-direction:column;align-items:center;gap:22px;background:#fafafa;font-size:13px;color:var(--muted)}
+  .nav .logo{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:#fff}
+  .nav .item{writing-mode:vertical-rl;transform:rotate(180deg);font-size:13px;letter-spacing:.06em}
+  .nav .item.on{font-weight:600;color:var(--ink);position:relative}
+  .nav .item.on::before{content:"";position:absolute;left:-10px;top:0;bottom:0;width:3px;background:var(--ink);border-radius:2px}
+
+  .side{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;background:#fafafa}
+  .btn-new{border:1px solid var(--ai);background:var(--ai);color:#fff;padding:12px;border-radius:8px;text-align:center;font-weight:600;font-size:15px}
+  .nav-it{border:1px solid transparent;border-radius:8px;padding:10px 12px;font-size:14px;display:flex;gap:8px;align-items:center;color:var(--ink-2)}
+  .nav-it.active{background:#fff;border-color:var(--line);color:var(--ink);font-weight:500}
+  .nav-it .ico{width:14px;height:14px;border:1px solid var(--line);border-radius:3px;background:#fff}
+
+  .main{border:1px solid var(--line);border-radius:10px;padding:20px;background:#fff;position:relative;overflow:hidden}
+  .main h2{margin:0 0 4px;font-size:22px;font-weight:600;letter-spacing:-.01em}
+  .main .sub{font-size:13px;color:var(--muted);margin-bottom:12px}
+  .search{position:absolute;right:18px;top:18px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--muted);background:#fff}
+
+  /* List rows */
+  .rows{display:flex;flex-direction:column;margin-top:6px}
+  .row{display:grid;grid-template-columns:14px 38px 32px 1fr 64px 110px;align-items:center;gap:10px;
+    border-bottom:1px solid var(--line-2);padding:10px 6px;font-size:13px}
+  .row .cb{width:12px;height:12px;border:1px solid var(--line);border-radius:2px;background:#fff}
+  .row .badge{border:1px solid var(--line);border-radius:4px;text-align:center;padding:2px 0;font-size:11px;background:#fff;font-weight:500;color:var(--ink-2)}
+  .row .badge.pub{background:var(--ai-soft);color:var(--ai-ink);border-color:#c6d8ff}
+  .row .badge.draft{background:#ffeede;color:#a85c1e;border-color:#f3d4b4}
+  .row .thumb{height:22px;border:1px solid var(--line);border-radius:3px;background:#f3f3f1}
+  .row .time{font-size:12px;color:var(--muted);text-align:right}
+  .row .actions{font-size:12px;color:var(--ai-ink);text-align:right;letter-spacing:.3px}
+
+  /* popover */
+  .popover{position:absolute;left:14px;top:84px;width:296px;background:#fff;border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 14px 32px -10px rgba(0,0,0,.22);padding:12px;z-index:5}
+  .popover .pop-tail{position:absolute;left:32px;top:-8px;width:14px;height:14px;
+    background:#fff;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+  .popover h4{margin:2px 4px 10px;font-size:13px;font-weight:600;color:var(--ink-2)}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:8px;background:#fff}
+  .opt.ai{border-color:#c6d8ff;background:linear-gradient(180deg,#fff,#f5f8ff)}
+  .opt .ic{width:36px;height:36px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;flex:0 0 auto;background:#fff;font-size:16px;font-weight:600;color:var(--ink-2)}
+  .opt.ai .ic{background:var(--ai);color:#fff;border-color:var(--ai)}
+  .opt .t{font-weight:600;font-size:14px;color:var(--ink)}
+  .opt .d{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
+  .opt .new{margin-left:auto;border:1px solid #c6d8ff;background:var(--ai-soft);color:var(--ai-ink);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.05em;align-self:center}
+
+  /* dialog */
+  .dim{position:absolute;inset:0;background:rgba(20,22,26,.18)}
+  .modal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:780px;background:#fff;
+    border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 48px -12px rgba(0,0,0,.3);padding:22px 24px;z-index:6}
+  .modal h3{margin:0 0 6px;font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px}
+  .modal h3 .sp{width:26px;height:26px;background:var(--ai);color:#fff;border-radius:6px;display:inline-grid;place-items:center;font-size:14px}
+  .modal h3 .phase{margin-left:auto;font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;letter-spacing:.04em;background:#fff3b0;border:1px solid #e8d57a;color:#7a5d0f}
+  .modal h3 .phase.p2{background:#e8f0ff;border-color:#c6d8ff;color:var(--ai-ink)}
+  .modal .lead{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.55}
+  .chat-input{border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-height:90px;background:#fafafa;
+    font-size:13px;color:var(--ink-2);line-height:1.6;position:relative}
+  .chat-input .ph{color:#a5a9ad}
+  .caret{display:inline-block;width:2px;height:14px;background:var(--ink);vertical-align:middle;margin-left:1px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .ctrl{position:relative;display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:#fff;font-size:12px;color:var(--ink-2);font-weight:500}
+  .ctrl .cv{font-size:10px;color:var(--muted)}
+  .ctrl.open{border-color:var(--ai);color:var(--ai-ink);box-shadow:0 0 0 3px rgba(91,141,239,.14)}
+  .ctrl.sel{background:var(--ai-soft);border-color:#c6d8ff;color:var(--ai-ink)}
+  .menu{position:absolute;left:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--line);
+    border-radius:8px;box-shadow:0 12px 24px -6px rgba(0,0,0,.15);padding:6px;min-width:170px;z-index:8;display:flex;flex-direction:column;gap:1px}
+  .menu h5{margin:2px 4px 4px;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  .menu .mi{padding:7px 10px;border-radius:6px;font-size:13px;color:var(--ink-2);font-weight:500;display:flex;justify-content:space-between;gap:8px;cursor:default}
+  .menu .mi:hover{background:#f3f5f8}
+  .menu .mi.sel{background:var(--ai-soft);color:var(--ai-ink)}
+  .menu .mi.sel::after{content:"✓"}
+
+  /* file dropzone */
+  .dropzone{margin-top:10px;display:flex;align-items:center;gap:12px;border:1px dashed var(--ai);background:#f5f8ff;border-radius:8px;padding:10px 12px}
+  .dropzone .dz-ic{width:34px;height:34px;border-radius:8px;background:#fff;border:1px solid #c6d8ff;color:var(--ai-ink);display:grid;place-items:center;font-size:16px}
+  .dropzone .dz-text strong{font-size:13px;color:var(--ai-ink);font-weight:600;display:block}
+  .dropzone .dz-text span{font-size:12px;color:var(--ink-2);line-height:1.45}
+  .dropzone .dz-btn{margin-left:auto;font-size:12px;padding:6px 12px;border:1px solid var(--ai);background:#fff;color:var(--ai-ink);border-radius:6px;font-weight:500}
+
+  /* article reference picker (Phase 2) */
+  .ref-block{margin-top:10px;border:1px solid #c6d8ff;background:#f5f8ff;border-radius:8px;padding:10px 12px}
+  .ref-block .rh{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ai-ink);font-weight:600;margin-bottom:8px}
+  .ref-block .rh .ic{width:22px;height:22px;border-radius:5px;background:#fff;border:1px solid #c6d8ff;display:grid;place-items:center;font-size:12px}
+  .ref-block .rh .add{margin-left:auto;font-size:12px;padding:4px 10px;border:1px solid var(--ai);background:#fff;color:var(--ai-ink);border-radius:6px;font-weight:500}
+  .ref-list{display:flex;flex-direction:column;gap:6px}
+  .ref-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #d9e3f7;border-radius:6px;padding:7px 10px;font-size:13px}
+  .ref-item .rt{font-weight:500;color:var(--ink)}
+  .ref-item .meta{font-size:11px;color:var(--muted)}
+  .ref-item .x{margin-left:auto;color:var(--muted);font-size:14px}
+
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
+  .hint{font-size:12px;color:var(--muted)}
+  .btn{border:1px solid var(--line);border-radius:6px;padding:8px 16px;font-size:13px;background:#fff;font-weight:500;color:var(--ink)}
+  .btn.primary{background:var(--ai);color:#fff;border-color:var(--ai)}
+
+  /* Editor */
+  .ed-title-l{font-size:13px;font-weight:500;color:var(--ink-2);margin-bottom:6px}
+  .title-fld{border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:16px;font-weight:500}
+  .toolbar{display:flex;gap:6px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;padding:7px 10px;background:#fafafa;font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+  .toolbar .tb{border:1px solid var(--line);border-radius:4px;padding:2px 7px;background:#fff;font-size:12px}
+  .body-fld{border:1px solid var(--line);border-radius:0 0 8px 8px;padding:14px 16px;background:#fff;min-height:300px;font-size:13px;line-height:1.6;color:var(--ink-2)}
+  .body-fld h4{margin:8px 0 4px;font-size:14px;font-weight:600;color:var(--ink)}
+  .body-fld p{margin:0 0 6px}
+  .typing{display:inline-block;width:6px;height:13px;background:var(--ink);vertical-align:-2px;animation:blink 1s steps(1) infinite;margin-left:1px}
+
+  .ai-banner{display:flex;align-items:center;gap:10px;background:var(--ai-soft);border:1px solid #c6d8ff;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px;color:var(--ai-ink)}
+  .ai-banner .sp{width:20px;height:20px;background:var(--ai);color:#fff;border-radius:5px;display:grid;place-items:center;font-size:12px}
+  .ai-banner .grow{flex:1;font-weight:500}
+  .ai-banner .mini{font-size:11px;opacity:.75;font-weight:400;margin-left:6px}
+  .ai-banner .act{font-size:13px;text-decoration:underline;font-weight:500}
+
+  /* highlight ring */
+  .ring{position:absolute;border:2px solid var(--warn);border-radius:10px;pointer-events:none;
+    box-shadow:0 0 0 4px rgba(224,122,60,.15)}
+
+  /* Plan B — paused, screens kept under translucent veil */
+  .plan-b-wrap{position:relative}
+  .plan-b-wrap .canvas-b{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0 70px;padding-top:34px}
+  .plan-b-veil{
+    position:absolute;inset:0;z-index:20;pointer-events:none;
+    background:rgba(247,247,245,.72);
+    backdrop-filter:saturate(.6) blur(.5px);
+    -webkit-backdrop-filter:saturate(.6) blur(.5px);
+    border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .plan-b-veil .stamp-b{
+    background:#fff;border:1.5px solid #a26bff;color:#5a2eb8;
+    font-size:18px;font-weight:600;letter-spacing:.04em;
+    padding:14px 26px;border-radius:10px;
+    box-shadow:0 12px 28px -10px rgba(90,46,184,.25);
+    transform:rotate(-3deg);
+  }
+  .plan-b-veil .stamp-b .sub{
+    display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:0;margin-top:2px;
+  }
+
+  /* Plan B specifics — slash command */
+  .scn-label.b .num{background:#a26bff}
+  .slash-line{
+    padding:12px 14px;font-size:13px;color:#bcc0c5;font-style:italic;border-radius:4px;background:#fafbfc;
+    margin:8px -4px;
+  }
+  .slash-line.typed{color:var(--ink);font-style:normal;background:#fff;border:1px solid var(--ai);box-shadow:0 0 0 3px rgba(91,141,239,.12)}
+  .slash-line .tk{color:var(--ai-ink);font-weight:600;background:var(--ai-soft);border:1px solid #c6d8ff;border-radius:4px;padding:1px 6px;margin-right:4px;font-style:normal}
+  .slash-pop{
+    position:absolute;background:#fff;border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 14px 30px -8px rgba(0,0,0,.22);padding:8px;width:380px;z-index:9;
+  }
+  .slash-pop h5{margin:4px 6px 6px;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .slash-pop .si{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:6px}
+  .slash-pop .si:hover, .slash-pop .si.hover{background:#f5f8ff}
+  .slash-pop .si.hover{outline:1px solid var(--ai);outline-offset:-1px}
+  .slash-pop .si .ic{width:26px;height:26px;border:1px solid var(--line);background:#fff;border-radius:6px;display:grid;place-items:center;font-size:13px;color:var(--ink-2);font-weight:600}
+  .slash-pop .si.ai .ic{background:#a26bff;color:#fff;border-color:#a26bff}
+  .slash-pop .si .t{font-size:13px;font-weight:500;color:var(--ink)}
+  .slash-pop .si .d{font-size:11px;color:var(--muted)}
+  .slash-pop .si .k{margin-left:auto;font-size:11px;color:var(--muted);background:#fafafa;border:1px solid var(--line-2);padding:1px 6px;border-radius:4px}
+  .btn.primary.purple{background:#a26bff;border-color:#a26bff}
+
+  /* arrows */
+  .arrows{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:visible}
+  .arrows svg{position:absolute;overflow:visible}
+  .arrow-label{position:absolute;font-weight:600;background:var(--ai-soft);border:1px solid #c6d8ff;color:var(--ai-ink);border-radius:6px;
+    padding:5px 10px;font-size:12px;box-shadow:0 4px 12px -6px rgba(0,0,0,.15);z-index:3;white-space:nowrap}
+  .arrow-label .step{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:4px;background:var(--ai);color:#fff;font-size:11px;font-weight:600;margin-right:6px;vertical-align:-4px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="doc-head">
+  <div>
+    <h1 class="doc-title">AI 文章助手 · 方案 A <span class="tag">v0.5 · 1280×720</span></h1>
+    <div class="doc-sub">從「新增文章」彈出選項 → 進入 AI 對話 → 自動填入編輯器。第 3 步分成 <b>Phase 1（先上線）</b>與 <b>Phase 2（後續擴充）</b>。方案 B 暫緩。</div>
+  </div>
+</header>
+
+<!-- ===================== PLAN A ===================== -->
+<section class="plan-row">
+  <div class="plan-head">
+    <span class="badge">方案 A</span>
+    <span class="ttl">列表入口 → 選項 → AI 對話 → 自動填入編輯器</span>
+    <span class="desc">適合「整篇從 0 開始」</span>
+  </div>
+
+  <div class="canvas-a" id="canvasA">
+    <div class="arrows" id="arrowsA"></div>
+
+    <!-- ============== A1 ============== -->
+    <div class="col">
+    <div class="scn" id="A1">
+      <div class="scn-label"><span class="num">1</span>文章列表</div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new" id="btnA">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="search">🔍 搜尋文章</div>
+            <h2>文章列表</h2>
+            <div class="sub">你目前網站前台顯示的文章</div>
+            <div class="rows">
+              <div class="row"><div class="cb"></div><div class="badge draft">草稿</div><div class="thumb"></div><div>什麼樣的肥胖需要「手術」？減重手術…</div><div class="time">07:48 PM</div><div class="actions">QR｜編輯｜下架</div></div>
+              <div class="row"><div class="cb"></div><div class="badge draft">草稿</div><div class="thumb"></div><div>手術原理｜我適合老花雷射嗎？</div><div class="time">03:13 PM</div><div class="actions">QR｜編輯｜下架</div></div>
+              <div class="row"><div class="cb"></div><div class="badge pub">發布</div><div class="thumb"></div><div>健康保健｜保養眼睛吃葉黃素…</div><div class="time">09:30 AM</div><div class="actions">QR｜編輯｜下架</div></div>
+              <div class="row"><div class="cb"></div><div class="badge pub">發布</div><div class="thumb"></div><div>術後恢復｜黃金比例的玻尿酸…</div><div class="time">04.01</div><div class="actions">QR｜編輯｜下架</div></div>
+              <div class="row"><div class="cb"></div><div class="badge pub">發布</div><div class="thumb"></div><div>醫材介紹｜不只看遠和看近…</div><div class="time">05.30</div><div class="actions">QR｜編輯｜下架</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ring" id="ringA"></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 1 · 文章列表</span>
+      <p></p>
+    </div>
+    </div>
+
+    <!-- ============== A2 ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label"><span class="num">2</span>選擇建立方式</div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side" style="position:relative">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+            <div class="popover">
+              <div class="pop-tail"></div>
+              <h4>選擇建立方式</h4>
+              <div class="opt"><div class="ic">＋</div><div><div class="t">空白文章</div><div class="d">直接進入編輯器，自己撰寫。</div></div></div>
+              <div class="opt ai"><div class="ic">✦</div><div><div class="t">AI 產生</div><div class="d">描述主題與重點，AI 產生初稿。</div></div><div class="new">NEW</div></div>
+            </div>
+          </div>
+          <div class="main" style="opacity:.45">
+            <div class="search">🔍 搜尋文章</div>
+            <h2>文章列表</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 2 · 選擇建立方式</span>
+      <p></p>
+    </div>
+    </div>
+
+    <!-- ============== A3 · Phase 1 ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label phase"><span class="num">3</span>AI 對話視窗 <span class="phase-tag">PHASE 1</span></div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="search">🔍 搜尋文章</div>
+            <h2 style="opacity:.4">文章列表</h2>
+          </div>
+          <div class="dim"></div>
+          <div class="modal">
+            <h3>
+              <span class="sp">✦</span>用 AI 產生一篇文章
+              <span class="phase">PHASE 1 · 先上線</span>
+            </h3>
+            <p class="lead">告訴 AI 你想寫的主題與重點，AI 會直接把初稿建立到編輯器，後續仍可自由修改。</p>
+            <div class="chat-input">
+              <span class="ph">例如：寫一篇給 40+ 族群的「老花雷射手術」介紹，包含適合對象、術前評估、常見問題…</span><span class="caret"></span>
+            </div>
+
+            <div class="controls">
+              <span class="ctrl open" style="position:relative">🎙 語氣：親切語氣 <span class="cv">▾</span>
+                <div class="menu">
+                  <h5>語氣 TONE</h5>
+                  <div class="mi sel">親切語氣</div>
+                  <div class="mi">正式專業</div>
+                </div>
+              </span>
+              <span class="ctrl">📏 字數 <span class="cv">▾</span></span>
+              <span class="ctrl open sel" style="position:relative">🗂 分類：白內障 <span class="cv">▾</span>
+                <div class="menu" style="min-width:190px">
+                  <h5>文章分類</h5>
+                  <div class="mi sel">白內障</div>
+                  <div class="mi">近視雷射</div>
+                  <div class="mi">老花雷射</div>
+                  <div class="mi">青光眼</div>
+                  <div class="mi">乾眼症</div>
+                  <div class="mi">術後保養</div>
+                  <div class="mi">健康保健</div>
+                </div>
+              </span>
+            </div>
+
+            <div class="foot">
+              <span class="hint">⌘ + Enter 送出 · Esc 取消</span>
+              <div style="display:flex;gap:8px"><button class="btn">取消</button><button class="btn primary">✦ 產生文章</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 3 · Phase 1（先上線版）</span>
+      <p>最精簡：主題描述 + 語氣 + 字數 + 分類。</p>
+      <p>分類預設帶入白內障、近視雷射、老花雷射、青光眼、乾眼症、術後保養、健康保健…等院內既有分類。</p>
+      <p>不含檔案上傳、不含參考文章選擇。</p>
+    </div>
+    </div>
+
+    <!-- ============== A3 · Phase 2 ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label phase"><span class="num">3</span>AI 對話視窗 <span class="phase-tag p2">PHASE 2</span></div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="search">🔍 搜尋文章</div>
+            <h2 style="opacity:.4">文章列表</h2>
+          </div>
+          <div class="dim"></div>
+          <div class="modal">
+            <h3>
+              <span class="sp">✦</span>用 AI 產生一篇文章
+              <span class="phase p2">PHASE 2 · 擴充</span>
+            </h3>
+            <p class="lead">在 Phase 1 基礎上：可上傳參考檔案，或從自己的文章庫挑選既有文章作為風格 / 內容參考。</p>
+            <div class="chat-input">
+              <span class="ph">例如：寫一篇給 40+ 族群的「老花雷射手術」介紹，包含適合對象、術前評估、常見問題…</span><span class="caret"></span>
+            </div>
+
+            <div class="controls">
+              <span class="ctrl open" style="position:relative">🎙 語氣：親切語氣 <span class="cv">▾</span>
+                <div class="menu">
+                  <h5>語氣 TONE</h5>
+                  <div class="mi sel">親切語氣</div>
+                  <div class="mi">正式專業</div>
+                </div>
+              </span>
+              <span class="ctrl">📏 字數 <span class="cv">▾</span></span>
+              <span class="ctrl sel">🗂 分類：白內障 <span class="cv">▾</span></span>
+            </div>
+
+            <!-- 參考檔案 -->
+            <div class="dropzone">
+              <div class="dz-ic">⤢</div>
+              <div class="dz-text">
+                <strong>拖曳或點選參考檔案</strong>
+                <span>支援 .pdf / .docx / .txt，AI 會以此為資料來源。</span>
+              </div>
+              <button class="dz-btn">選取檔案</button>
+            </div>
+
+            <!-- 從文章庫挑選 -->
+            <div class="ref-block">
+              <div class="rh">
+                <span class="ic">📚</span>
+                <span>參考自己的文章</span>
+                <button class="add">+ 從文章庫挑選</button>
+              </div>
+              <div class="ref-list">
+                <div class="ref-item">
+                  <div class="badge pub" style="border:1px solid #c6d8ff;background:#fff;color:var(--ai-ink);padding:1px 6px;border-radius:4px;font-size:11px">已發布</div>
+                  <div>
+                    <div class="rt">手術原理｜我適合老花雷射嗎？</div>
+                    <div class="meta">2025.03 · 老花雷射分類</div>
+                  </div>
+                  <span class="x">✕</span>
+                </div>
+                <div class="ref-item">
+                  <div class="badge pub" style="border:1px solid #c6d8ff;background:#fff;color:var(--ai-ink);padding:1px 6px;border-radius:4px;font-size:11px">已發布</div>
+                  <div>
+                    <div class="rt">醫材介紹｜不只看遠和看近…</div>
+                    <div class="meta">2024.11 · 醫材介紹分類</div>
+                  </div>
+                  <span class="x">✕</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="foot">
+              <span class="hint">⌘ + Enter 送出 · Esc 取消</span>
+              <div style="display:flex;gap:8px"><button class="btn">取消</button><button class="btn primary">✦ 產生文章</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 3 · Phase 2（後續擴充）</span>
+      <p>Phase 1 全部功能 + 兩項新東西：</p>
+      <ul>
+        <li>上傳參考檔案（.pdf / .docx / .txt）</li>
+        <li>從院內既有文章庫挑選文章當參考</li>
+      </ul>
+    </div>
+    </div>
+
+    <!-- ============== A4 ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label"><span class="num">4</span>編輯器（AI 已填入）</div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="ed-title-l">標題</div>
+            <div class="title-fld">老花雷射手術全解析｜40+ 族群的術前評估與適合對象</div>
+
+            <div class="ed-title-l" style="margin-top:10px">內文</div>
+            <div class="ai-banner">
+              <span class="sp">✦</span>
+              <div class="grow">AI 已產生初稿<span class="mini">依輸入主題建立，可直接編輯。如需改寫請至列表點「編輯」重新生成。</span></div>
+              
+            </div>
+            <div class="toolbar">
+              <span class="tb">↶</span><span class="tb">↷</span><span class="tb">段落</span><span class="tb">Normal</span>
+              <span class="tb">12pt</span><span class="tb">B</span><span class="tb">I</span><span class="tb">U</span><span class="tb">S</span><span class="tb">🖼</span>
+            </div>
+            <div class="body-fld">
+              <h4>什麼是老花雷射手術？</h4>
+              <p>老花雷射是一種針對 40 歲以上、開始出現近距離視力困擾族群所設計的屈光手術…</p>
+              <h4>適合對象</h4>
+              <p>・40–60 歲、有閱讀與螢幕需求者<br>・不想長期配戴老花眼鏡<br>・術前角膜厚度與眼壓在標準範圍…</p>
+              <h4>術前評估流程</h4>
+              <p>完整檢查約 90 分鐘，包含角膜地形圖、淚液測試、屈光度檢測<span class="typing"></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 4 · 編輯器已填入</span>
+      <p></p>
+    </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== PLAN B (paused) ===================== -->
+<section class="plan-row">
+  <div class="plan-head b">
+    <span class="badge">方案 B</span>
+    <span class="ttl">編輯器內輸入「/」喚出 AI 助理（Slash 指令）</span>
+    <span class="desc">Notion / Linear 風格</span>
+  </div>
+
+  <div class="plan-b-wrap">
+    <div class="canvas-b">
+
+      <!-- ============== B1 ============== -->
+      <div class="col">
+      <div class="scn">
+        <div class="scn-label b"><span class="num">1</span>進入空白編輯器</div>
+        <span class="scn-size">1280 × 720</span>
+        <div class="scn-inner">
+          <div class="app">
+            <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+            <div class="side">
+              <div class="btn-new">+ 新增文章</div>
+              <div class="nav-it"><span class="ico"></span>文章列表</div>
+              <div class="nav-it"><span class="ico"></span>文章分類</div>
+              <div class="nav-it"><span class="ico"></span>媒體庫</div>
+            </div>
+            <div class="main">
+              <div class="ed-title-l">標題</div>
+              <div class="title-fld" style="color:#bcc0c5">輸入文章標題…</div>
+              <div class="ed-title-l" style="margin-top:10px">內文</div>
+              <div class="toolbar">
+                <span class="tb">↶</span><span class="tb">↷</span><span class="tb">段落</span><span class="tb">Normal</span>
+                <span class="tb">12pt</span><span class="tb">B</span><span class="tb">I</span><span class="tb">U</span><span class="tb">S</span><span class="tb">🖼</span>
+              </div>
+              <div class="body-fld">
+                <div class="slash-line">輸入「/」開啟 AI 助理，或直接撰寫內文…<span class="caret"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="nh">📝 B1 · 進入空白編輯器</span>
+        <p>在這裡直接打字編輯。</p>
+      </div>
+      </div>
+
+      <!-- ============== B2 ============== -->
+      <div class="col">
+      <div class="scn">
+        <div class="scn-label b"><span class="num">2</span>輸入「/」喚出選單</div>
+        <span class="scn-size">1280 × 720</span>
+        <div class="scn-inner">
+          <div class="app">
+            <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+            <div class="side">
+              <div class="btn-new">+ 新增文章</div>
+              <div class="nav-it"><span class="ico"></span>文章列表</div>
+              <div class="nav-it"><span class="ico"></span>文章分類</div>
+              <div class="nav-it"><span class="ico"></span>媒體庫</div>
+            </div>
+            <div class="main">
+              <div class="ed-title-l">標題</div>
+              <div class="title-fld" style="color:#bcc0c5">輸入文章標題…</div>
+              <div class="ed-title-l" style="margin-top:10px">內文</div>
+              <div class="toolbar">
+                <span class="tb">↶</span><span class="tb">↷</span><span class="tb">段落</span><span class="tb">Normal</span>
+                <span class="tb">12pt</span><span class="tb">B</span><span class="tb">I</span><span class="tb">U</span><span class="tb">S</span><span class="tb">🖼</span>
+              </div>
+              <div class="body-fld" style="position:relative">
+                <div class="slash-line typed"><span class="tk">/</span>ai<span class="caret"></span></div>
+                <div class="slash-pop" style="left:18px;top:60px">
+                  <h5>AI 指令</h5>
+                  <div class="si ai hover">
+                    <div class="ic">✦</div>
+                    <div><div class="t">用 AI 產生整篇文章</div><div class="d">輸入主題後，AI 直接寫一整篇</div></div>
+                    <div class="k">↵</div>
+                  </div>
+                  <div class="si ai">
+                    <div class="ic">✦</div>
+                    <div><div class="t">用 AI 寫一段</div><div class="d">給 AI 提示，產生一個段落</div></div>
+                  </div>
+                  <div class="si ai">
+                    <div class="ic">✦</div>
+                    <div><div class="t">AI 大綱建議</div><div class="d">先列出大綱再展開</div></div>
+                  </div>
+                  <h5 style="margin-top:4px">基本</h5>
+                  <div class="si"><div class="ic">H</div><div><div class="t">標題</div></div></div>
+                  <div class="si"><div class="ic">⊟</div><div><div class="t">項目清單</div></div></div>
+                  <div class="si"><div class="ic">🖼</div><div><div class="t">插入圖片</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="nh">📝 B2 · 輸入「/」喚出選單</span>
+        <p>在這裡直接打字編輯。</p>
+      </div>
+      </div>
+
+      <!-- ============== B3 ============== -->
+      <div class="col">
+      <div class="scn">
+        <div class="scn-label b"><span class="num">3</span>輸入主題 + 選語氣</div>
+        <span class="scn-size">1280 × 720</span>
+        <div class="scn-inner">
+          <div class="app">
+            <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+            <div class="side">
+              <div class="btn-new">+ 新增文章</div>
+              <div class="nav-it"><span class="ico"></span>文章列表</div>
+              <div class="nav-it"><span class="ico"></span>文章分類</div>
+              <div class="nav-it"><span class="ico"></span>媒體庫</div>
+            </div>
+            <div class="main">
+              <div class="ed-title-l">標題</div>
+              <div class="title-fld" style="color:#bcc0c5">輸入文章標題…</div>
+              <div class="ed-title-l" style="margin-top:10px">內文</div>
+              <div class="toolbar">
+                <span class="tb">↶</span><span class="tb">↷</span><span class="tb">段落</span><span class="tb">Normal</span>
+                <span class="tb">12pt</span><span class="tb">B</span><span class="tb">I</span><span class="tb">U</span><span class="tb">S</span><span class="tb">🖼</span>
+              </div>
+              <div class="body-fld" style="position:relative">
+                <div style="border:1px solid #d6c7ff;background:#faf7ff;border-radius:8px;padding:12px;">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <span style="width:22px;height:22px;background:#a26bff;color:#fff;border-radius:5px;display:grid;place-items:center;font-size:13px">✦</span>
+                    <strong style="font-size:13px;color:#5a2eb8">AI 助理</strong>
+                    <span style="font-size:11px;color:var(--muted);margin-left:auto">Esc 取消</span>
+                  </div>
+                  <div style="border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;font-size:13px;color:var(--ink-2);min-height:70px">
+                    寫一篇給 40+ 族群的「老花雷射手術」介紹，包含適合對象、術前評估、常見問題<span class="caret"></span>
+                  </div>
+                  <div class="controls" style="margin-top:8px">
+                    <span class="ctrl open" style="position:relative;border-color:#a26bff;color:#5a2eb8;box-shadow:0 0 0 3px rgba(162,107,255,.14)">🎙 語氣：親切語氣 <span class="cv">▾</span>
+                      <div class="menu" style="border-color:#d6c7ff">
+                        <h5>語氣 TONE</h5>
+                        <div class="mi sel" style="background:#f1ebff;color:#5a2eb8">親切語氣</div>
+                        <div class="mi">正式專業</div>
+                      </div>
+                    </span>
+                    <span class="ctrl">📏 字數：800 字 <span class="cv">▾</span></span>
+                    <span class="ctrl">🗂 分類 <span class="cv">▾</span></span>
+                    <button class="btn primary purple" style="margin-left:auto;padding:6px 12px;font-size:12px">✦ 產生</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="nh">📝 B3 · 輸入主題 + 設定</span>
+        <p>在這裡直接打字編輯。</p>
+      </div>
+      </div>
+
+      <!-- ============== B4 ============== -->
+      <div class="col">
+      <div class="scn">
+        <div class="scn-label b"><span class="num">4</span>AI 串流寫入內文</div>
+        <span class="scn-size">1280 × 720</span>
+        <div class="scn-inner">
+          <div class="app">
+            <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+            <div class="side">
+              <div class="btn-new">+ 新增文章</div>
+              <div class="nav-it"><span class="ico"></span>文章列表</div>
+              <div class="nav-it"><span class="ico"></span>文章分類</div>
+              <div class="nav-it"><span class="ico"></span>媒體庫</div>
+            </div>
+            <div class="main">
+              <div class="ed-title-l">標題</div>
+              <div class="title-fld">老花雷射手術全解析｜40+ 族群的術前評估</div>
+              <div class="ed-title-l" style="margin-top:10px">內文</div>
+              <div class="toolbar">
+                <span class="tb">↶</span><span class="tb">↷</span><span class="tb">段落</span><span class="tb">Normal</span>
+                <span class="tb">12pt</span><span class="tb">B</span><span class="tb">I</span><span class="tb">U</span><span class="tb">S</span><span class="tb">🖼</span>
+              </div>
+              <div class="body-fld">
+                <h4>什麼是老花雷射手術？</h4>
+                <p>老花雷射是一種針對 40 歲以上、開始出現近距離視力困擾族群所設計的屈光手術…</p>
+                <h4>適合對象</h4>
+                <p>・40–60 歲、有閱讀與螢幕需求者<br>・不想長期配戴老花眼鏡<br>・術前角膜厚度在標準範圍…</p>
+                <h4>術前評估流程</h4>
+                <p>完整檢查約 90 分鐘，包含角膜地形圖、淚液測試<span class="typing"></span></p>
+                <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+                  <span style="font-size:12px;color:#5a2eb8;background:#f1ebff;border:1px solid #d6c7ff;padding:3px 10px;border-radius:999px">✦ AI 生成中…</span>
+                  <span style="font-size:12px;color:var(--muted)">可隨時按 Esc 停止</span>
+                  <span style="margin-left:auto;display:flex;gap:6px"><button class="btn" style="padding:4px 10px;font-size:12px">捨棄</button><button class="btn primary purple" style="padding:4px 10px;font-size:12px">採用</button></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <span class="nh">📝 B4 · AI 串流寫入內文</span>
+        <p>在這裡直接打字編輯。</p>
+      </div>
+      </div>
+
+    </div>
+
+    <!-- semi-transparent veil — keeps screens visible but signals "paused" -->
+    <div class="plan-b-veil" aria-hidden="true">
+      <div class="stamp-b">
+        方案 B · 暫緩
+        <span class="sub">本次先聚焦方案 A，這層遮罩之後可拿掉</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+  function drawArrows(){
+    const canvasEl = document.getElementById('canvasA');
+    const layerEl  = document.getElementById('arrowsA');
+    layerEl.innerHTML = '';
+    const scns = canvasEl.querySelectorAll('.scn');
+    if (scns.length < 2) return;
+    const labels = ['點「+ 新增文章」','選「AI 產生」','Phase 1 / 2 兩版並列','送出 → AI 生成'];
+    for (let i=0; i<scns.length-1; i++){
+      const a = scns[i], b = scns[i+1];
+      const A = {x:a.offsetLeft + a.offsetWidth, y:a.offsetTop + a.offsetHeight/2};
+      const B = {x:b.offsetLeft, y:b.offsetTop + b.offsetHeight/2};
+      drawArrow(layerEl, A, B);
+      const lab = document.createElement('div');
+      lab.className = 'arrow-label';
+      lab.innerHTML = `<span class="step">${i+1}</span>${labels[i] || ''}`;
+      lab.style.left = ((A.x+B.x)/2 - 80) + 'px';
+      lab.style.top  = (A.y - 30) + 'px';
+      layerEl.appendChild(lab);
+    }
+  }
+  function drawArrow(layer, a, b){
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS,'svg');
+    const minX = Math.min(a.x,b.x)-30, minY = Math.min(a.y,b.y)-30;
+    const maxX = Math.max(a.x,b.x)+30, maxY = Math.max(a.y,b.y)+30;
+    svg.setAttribute('width', maxX-minX);
+    svg.setAttribute('height', maxY-minY);
+    svg.style.left = minX + 'px';
+    svg.style.top  = minY + 'px';
+    const ax=a.x-minX, ay=a.y-minY, bx=b.x-minX, by=b.y-minY;
+    const path = document.createElementNS(NS,'path');
+    path.setAttribute('d', `M ${ax} ${ay} L ${bx} ${by}`);
+    path.setAttribute('stroke', '#5b8def');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('fill', 'none');
+    svg.appendChild(path);
+    const ang = Math.atan2(by-ay, bx-ax), ah = 10;
+    const head = document.createElementNS(NS,'path');
+    head.setAttribute('d', `M ${bx} ${by} L ${bx-ah*Math.cos(ang-Math.PI/7)} ${by-ah*Math.sin(ang-Math.PI/7)} L ${bx-ah*Math.cos(ang+Math.PI/7)} ${by-ah*Math.sin(ang+Math.PI/7)} Z`);
+    head.setAttribute('fill', '#5b8def');
+    head.setAttribute('stroke', '#5b8def');
+    head.setAttribute('stroke-width', '2');
+    head.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(head);
+    layer.appendChild(svg);
+  }
+  function placeRing(){
+    const ring = document.getElementById('ringA');
+    const btn  = document.getElementById('btnA');
+    if (!ring || !btn) return;
+    ring.style.left   = (btn.offsetLeft - 6) + 'px';
+    ring.style.top    = (btn.offsetTop  - 6) + 'px';
+    ring.style.width  = (btn.offsetWidth + 12) + 'px';
+    ring.style.height = (btn.offsetHeight + 12) + 'px';
+  }
+  function go(){ placeRing(); drawArrows(); }
+  window.addEventListener('load', go);
+  window.addEventListener('resize', go);
+</script>
+</body>
+</html>
