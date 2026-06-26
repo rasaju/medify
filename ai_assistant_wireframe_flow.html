@@ -2,7 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8" />
-<title>AI 文章助手 — 方案 A · v5</title>
+<title>AI article generator plan A - v6</title>
+<meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -22,7 +23,7 @@
     background-image:radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0);
     background-size:20px 20px; min-height:100vh; padding:48px 40px 80px; overflow-x:auto;
   }
-  .wrap{min-width:2580px;max-width:2580px;margin:0 auto}
+  .wrap{min-width:4160px;max-width:4160px;margin:0 auto}
 
   .doc-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:36px}
   .doc-title{font-size:26px;font-weight:600;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
@@ -41,8 +42,8 @@
   .plan-head .ttl{font-size:16px;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:600}
   .plan-head .desc{font-size:12px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
 
-  /* canvas — 5 columns for Plan A */
-  .canvas-a{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:0 60px;padding-top:34px}
+  /* canvas — 8 columns for Plan A */
+  .canvas-a{position:relative;display:grid;grid-template-columns:repeat(8,1fr);gap:0 60px;padding-top:34px}
   .col{display:flex;flex-direction:column;gap:18px}
 
   /* simple, plain note — direct-edit friendly */
@@ -95,7 +96,7 @@
   }
 
   /* ====== App chrome (rendered at 1280x720) ====== */
-  .app{display:grid;grid-template-columns:70px 240px 1fr;gap:14px;padding:18px;height:100%}
+  .app{display:grid;grid-template-columns:70px 240px 1fr;gap:14px;padding:18px;height:100%;position:relative}
   .nav{border:1px solid var(--line);border-radius:10px;padding:14px 8px;
     display:flex;flex-direction:column;align-items:center;gap:22px;background:#fafafa;font-size:13px;color:var(--muted)}
   .nav .logo{width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:#fff}
@@ -208,6 +209,96 @@
   .ai-banner .mini{font-size:11px;opacity:.75;font-weight:400;margin-left:6px}
   .ai-banner .act{font-size:13px;text-decoration:underline;font-weight:500}
 
+  /* ===== Draft preview modal (new step) ===== */
+  .modal.draft{width:820px;display:flex;flex-direction:column;max-height:660px}
+  .chat-thread{
+    border:1px solid var(--line-2);border-radius:10px;background:#fafbfc;
+    padding:14px;margin:4px 0 12px;display:flex;flex-direction:column;gap:14px;
+    max-height:300px;overflow:hidden;position:relative;
+  }
+  .msg{display:flex;gap:10px;align-items:flex-start}
+  .msg .av{width:26px;height:26px;border-radius:6px;flex:0 0 auto;display:grid;place-items:center;font-size:13px;font-weight:600}
+  .msg.user{justify-content:flex-end}
+  .msg.user .bubble{background:#eef1f4;border:1px solid var(--line-2);border-radius:10px 10px 2px 10px;
+    padding:10px 12px;font-size:13px;color:var(--ink);max-width:78%;line-height:1.55}
+  .msg.user .av{background:#dfe3e8;color:var(--ink-2);order:2}
+  .msg.ai .av{background:var(--ai);color:#fff}
+  .draft-card{flex:1;background:#fff;border:1px solid #c6d8ff;border-radius:10px 10px 10px 2px;padding:12px 14px;max-width:88%}
+  .draft-card .dc-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ai-ink);
+    background:var(--ai-soft);border:1px solid #c6d8ff;border-radius:5px;padding:2px 8px;margin-bottom:8px}
+  .draft-card h4{margin:8px 0 3px;font-size:13.5px;font-weight:600;color:var(--ink)}
+  .draft-card h4:first-of-type{margin-top:0}
+  .draft-card p{margin:0 0 5px;font-size:12.5px;line-height:1.6;color:var(--ink-2)}
+  .draft-card .dc-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.4}
+  .thread-fade{position:absolute;left:0;right:0;bottom:0;height:30px;
+    background:linear-gradient(180deg,rgba(250,251,252,0),#fafbfc);pointer-events:none}
+
+  /* ===== Draft preview v2 — big draft, left/right layout ===== */
+  .modal.draft2{width:940px;padding:0;display:flex;flex-direction:column;overflow:hidden}
+  .d2-top{padding:18px 22px 14px}
+  .d2-top h3{margin:0}
+  .d2-top .lead{margin:8px 0 0}
+  .d2-body{display:grid;grid-template-columns:1fr 250px;border-top:1px solid var(--line-2)}
+  .d2-body.full{grid-template-columns:1fr}
+  .d2-body.full .d2-draft{border-right:none}
+  .d2-draft{padding:20px 24px;border-right:1px solid var(--line-2);position:relative;
+    height:392px;overflow-y:scroll;background:#fff}
+  /* visible scrollbar to hint the article may be long */
+  .d2-draft::-webkit-scrollbar{width:10px}
+  .d2-draft::-webkit-scrollbar-track{background:#f1f3f5;border-radius:8px}
+  .d2-draft::-webkit-scrollbar-thumb{background:#c4cad1;border-radius:8px;border:2px solid #f1f3f5}
+  .d2-draft::-webkit-scrollbar-thumb:hover{background:#aab1b9}
+  .d2-draft .dc-title{font-size:20px;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:14px}
+  .d2-draft h4{margin:16px 0 5px;font-size:15px;font-weight:600;color:var(--ink)}
+  .d2-draft h4:first-of-type{margin-top:0}
+  .d2-draft p{margin:0 0 8px;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+  .d2-fade{position:absolute;left:0;right:0;bottom:0;height:46px;
+    background:linear-gradient(180deg,rgba(255,255,255,0),#fff);pointer-events:none}
+  .d2-info{padding:18px;background:#fafbfc;display:flex;flex-direction:column;gap:16px}
+  .info-sec h5{margin:0 0 8px;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .info-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;
+    padding:7px 0;border-bottom:1px dashed var(--line-2)}
+  .info-row:last-child{border-bottom:none}
+  .info-row .k{color:var(--muted)}
+  .info-row .v{color:var(--ink);font-weight:500}
+  .info-row .v.pill{background:var(--ai-soft);border:1px solid #c6d8ff;color:var(--ai-ink);padding:2px 8px;border-radius:5px;font-size:12px}
+  .draft-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ai-ink);
+    background:var(--ai-soft);border:1px solid #c6d8ff;border-radius:6px;padding:5px 10px}
+  /* single bottom bar */
+  .d2-bar{display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--line-2);background:#fff}
+  .d2-bar .barhint{font-size:12px;color:var(--muted)}
+  .d2-bar .grow{flex:1}
+  .btn.lg{padding:10px 22px;font-size:14px;border-radius:8px}
+  .btn.ghost{background:#fff;border-color:var(--line);color:var(--ink-2)}
+  .btn.ghost.on{border-color:var(--ai);color:var(--ai-ink);background:var(--ai-soft);box-shadow:0 0 0 3px rgba(91,141,239,.14)}
+  /* button loading spinner */
+  .btn.loading{opacity:.92;pointer-events:none}
+  .btn .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.45);
+    border-top-color:#fff;border-radius:50%;vertical-align:-2px;margin-right:7px;animation:spin .7s linear infinite}
+  .btn.ghost .spin{border-color:rgba(91,141,239,.3);border-top-color:var(--ai)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* progress over draft while generating */
+  .d2-gen{position:absolute;inset:0;background:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:2}
+  .d2-gen .ring{width:34px;height:34px;border:3px solid var(--ai-soft);border-top-color:var(--ai);border-radius:50%;animation:spin .7s linear infinite}
+  .d2-gen .gt{font-size:13px;color:var(--ai-ink);font-weight:600}
+  /* toast (step 5) */
+  .toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);
+    display:inline-flex;align-items:center;background:#1d2733;color:#fff;
+    padding:9px 20px;border-radius:999px;font-size:13px;font-weight:500;
+    box-shadow:0 10px 28px rgba(20,30,45,.32);z-index:30;white-space:nowrap}
+  .toast .sp{width:18px;height:18px;border-radius:5px;background:var(--ai);display:grid;place-items:center;font-size:11px}
+  /* modify input that appears after 點「修改」 */
+  .d2-edit{padding:14px 22px;border-top:1px solid var(--line-2);background:#f5f8ff}
+  .d2-edit .el{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ai-ink);margin-bottom:8px}
+  .d2-edit .el .dot{width:18px;height:18px;border-radius:5px;background:var(--ai);color:#fff;display:grid;place-items:center;font-size:11px}
+  .d2-edit .ebox{border:1px solid var(--ai);border-radius:8px;background:#fff;padding:11px 13px;font-size:13px;color:var(--ink-2);
+    line-height:1.6;box-shadow:0 0 0 3px rgba(91,141,239,.12)}
+  .d2-edit .ebox .ph{color:#a5a9ad}
+  .d2-edit .erow{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .d2-edit .echips{display:flex;gap:6px;flex-wrap:wrap}
+  .d2-edit .chip{font-size:12px;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+
   /* highlight ring */
   .ring{position:absolute;border:2px solid var(--warn);border-radius:10px;pointer-events:none;
     box-shadow:0 0 0 4px rgba(224,122,60,.15)}
@@ -267,12 +358,27 @@
 </head>
 <body>
 
+<template id="__bundler_thumbnail" data-bg-color="#f7f7f5">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="180" y="170" width="840" height="460" rx="28" fill="#ffffff" stroke="#dfe1e4" stroke-width="4"/>
+    <circle cx="270" cy="250" r="22" fill="#5b8def"/>
+    <text x="270" y="259" font-family="sans-serif" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle">✦</text>
+    <rect x="316" y="236" width="280" height="26" rx="13" fill="#1f2329"/>
+    <rect x="232" y="330" width="540" height="16" rx="8" fill="#e6e6e2"/>
+    <rect x="232" y="368" width="700" height="16" rx="8" fill="#e6e6e2"/>
+    <rect x="232" y="406" width="640" height="16" rx="8" fill="#e6e6e2"/>
+    <rect x="232" y="444" width="420" height="16" rx="8" fill="#e6e6e2"/>
+    <rect x="690" y="556" width="120" height="48" rx="12" fill="#e8f0ff" stroke="#5b8def" stroke-width="3"/>
+    <rect x="826" y="556" width="120" height="48" rx="12" fill="#5b8def"/>
+  </svg>
+</template>
+
 <div class="wrap">
 
 <header class="doc-head">
   <div>
     <h1 class="doc-title">AI 文章助手 · 方案 A <span class="tag">v0.5 · 1280×720</span></h1>
-    <div class="doc-sub">從「新增文章」彈出選項 → 進入 AI 對話 → 自動填入編輯器。第 3 步分成 <b>Phase 1（先上線）</b>與 <b>Phase 2（後續擴充）</b>。方案 B 暫緩。</div>
+    <div class="doc-sub">從「新增文章」彈出選項 → 進入 AI 對話輸入 prompt → <b>先在 popup 內產生草稿</b>（可繼續下指令調整，或直接產生文章）→ 自動填入編輯器。第 3 步分成 <b>Phase 1（先上線）</b>與 <b>Phase 2（後續擴充）</b>。方案 B 暫緩。</div>
   </div>
 </header>
 
@@ -519,15 +625,197 @@
       <p>Phase 1 全部功能 + 兩項新東西：</p>
       <ul>
         <li>上傳參考檔案（.pdf / .docx / .txt）</li>
-        <li>從帳號內既有文章庫挑選文章當參考</li>
+        <li>從院內既有文章庫挑選文章當參考</li>
       </ul>
+    </div>
+    </div>
+
+    <!-- ============== A · 草稿預覽（預設） ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label phase"><span class="num">4</span>草稿預覽</div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="search">🔍 搜尋文章</div>
+            <h2 style="opacity:.4">文章列表</h2>
+          </div>
+          <div class="dim"></div>
+          <div class="modal draft2">
+            <div class="d2-top">
+              <h3>
+                <span class="sp">✦</span>AI 草稿預覽
+              </h3>
+            </div>
+
+            <div class="d2-body full">
+              <!-- 草稿全文（滿寬） -->
+              <div class="d2-draft">
+                <div class="dc-title">老花雷射手術全解析｜40+ 族群的術前評估與適合對象</div>
+                <h4>什麼是老花雷射手術？</h4>
+                <p>老花雷射是針對 40 歲以上、開始出現近距離視力困擾族群所設計的屈光手術。透過調整角膜屈光，讓眼睛在不同距離都能維持清晰視力，減少對老花眼鏡的依賴。</p>
+                <h4>適合對象</h4>
+                <p>40–60 歲、日常有大量閱讀與螢幕需求、不想長期配戴老花眼鏡，且角膜厚度與眼壓皆在標準範圍內者。建議先經完整術前評估再決定。</p>
+                <h4>術前評估流程</h4>
+                <p>完整檢查約 90 分鐘，包含角膜地形圖、淚液測試、屈光度檢測與眼底檢查，由醫師綜合判斷是否適合手術。</p>
+                <h4>常見問題</h4>
+                <p>手術會痛嗎？恢復期多久？效果可以維持多久？術後保養該注意什麼？</p>
+                <h4>術後保養與注意事項</h4>
+                <p>術後初期避免揉眼與劇烈運動，依醫嘱點藥水、按時回診，並避免長時間近距離用眼。多數人於數日內恢復日常生活。</p>
+              </div>
+            </div>
+
+            <!-- 單一條 bottom bar：修改 / 確定 -->
+            <div class="d2-bar">
+              <span class="grow"></span>
+              <button class="btn ghost lg">✏ 修改</button>
+              <button class="btn primary lg">✓ 確定</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 4 · 草稿預覽</span>
+      <p>送出 prompt 後先在 popup 內預覽 <b>放大的草稿全文</b>，佔滿整個寬度。</p>
+      <p>文章可能很長，草稿區有 <b>捲軸</b>可上下瀏覽。</p>
+      <p>底部只有一條 bar：<b>修改</b> / <b>確定</b>。</p>
+    </div>
+    </div>
+
+    <!-- ============== A · 草稿預覽（點「修改」後） ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label phase"><span class="num">4</span>草稿預覽（修改中）</div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="search">🔍 搜尋文章</div>
+            <h2 style="opacity:.4">文章列表</h2>
+          </div>
+          <div class="dim"></div>
+          <div class="modal draft2">
+            <div class="d2-top">
+              <h3>
+                <span class="sp">✦</span>AI 草稿預覽
+              </h3>
+            </div>
+
+            <div class="d2-body full">
+              <div class="d2-draft" style="height:300px">
+                <div class="dc-title">老花雷射手術全解析｜40+ 族群的術前評估與適合對象</div>
+                <h4>什麼是老花雷射手術？</h4>
+                <p>老花雷射是針對 40 歲以上、開始出現近距離視力困擾族群所設計的屈光手術。透過調整角膜屈光，讓眼睛在不同距離都能維持清晰視力。</p>
+                <h4>適合對象</h4>
+                <p>40–60 歲、日常有大量閱讀與螢幕需求、不想長期配戴老花眼鏡者…</p>
+                <h4>術前評估流程</h4>
+                <p>完整檢查約 90 分鐘，包含角膌地形圖、淚液測試、屈光度檢測與眼底檢查。</p>
+              </div>
+            </div>
+
+            <!-- 點「修改」後展開的對話框 -->
+            <div class="d2-edit">
+              <div class="el"><span class="dot">✦</span>輸入修改指令</div>
+              <div class="ebox"><span class="ph">例如：第二段補上費用範圍、語氣再正式一點、結尾加上預約 CTA…</span><span class="caret"></span></div>
+            </div>
+
+            <!-- bottom bar：修改狀態 -->
+            <div class="d2-bar">
+              <span class="grow"></span>
+              <button class="btn ghost lg on">取消</button>
+              <button class="btn primary lg">送出</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 4-B · 修改中</span>
+      <p>點「修改」才<b>展開對話框</b>輸入指令；草稿區仍可捲動。</p>
+      <p> 送出 → AI 重生草稿，回到預覽；可重複。滿意按「確定」。</p>
+    </div>
+    </div>
+
+    <!-- ============== A · 生成中 loading ============== -->
+    <div class="col">
+    <div class="scn">
+      <div class="scn-label phase"><span class="num">4</span>確定後 · 生成中</div>
+      <span class="scn-size">1280 × 720</span>
+      <div class="scn-inner">
+        <div class="app">
+          <div class="nav"><div class="logo"></div><div class="item">共用</div><div class="item on">文章</div><div class="item">設定</div></div>
+          <div class="side">
+            <div class="btn-new">+ 新增文章</div>
+            <div class="nav-it active"><span class="ico"></span>文章列表</div>
+            <div class="nav-it"><span class="ico"></span>文章分類</div>
+            <div class="nav-it"><span class="ico"></span>媒體庫</div>
+          </div>
+          <div class="main">
+            <div class="search">🔍 搜尋文章</div>
+            <h2 style="opacity:.4">文章列表</h2>
+          </div>
+          <div class="dim"></div>
+          <div class="modal draft2">
+            <div class="d2-top">
+              <h3>
+                <span class="sp">✦</span>AI 草稿預覽
+                <span class="phase p2">生成中</span>
+              </h3>
+              <p class="lead">按「確定」後 AI 正在生成完整文章，按鈕顯示讀取狀態，完成即填入編輯器。</p>
+            </div>
+
+            <div class="d2-body full">
+              <div class="d2-draft">
+                <div class="dc-title" style="opacity:.35">老花雷射手術全解析｜40+ 族群的術前評估與適合對象</div>
+                <h4 style="opacity:.3">什麼是老花雷射手術？</h4>
+                <p style="opacity:.3">老花雷射是針對 40 歲以上、開始出現近距離視力困擾族群所設計的屈光手術…</p>
+                <div class="d2-gen">
+                  <div class="ring"></div>
+                  <div class="gt" style="padding: 108px 0px 0px">AI 正在生成文章…</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d2-bar">
+              <span class="barhint">生成中請稍候，約數秒…</span>
+              <span class="grow"></span>
+              <button class="btn ghost lg" style="opacity:.5;pointer-events:none">✏ 修改</button>
+              <button class="btn primary lg loading"><span class="spin"></span>生成中…</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="nh">📝 4→5 · 生成中（loading）</span>
+      <p>按「確定」後不立即跳轉，<b>「確定」按鈕變成讀取狀態</b>（轉圈＋「生成中…」）。</p>
+      <p>草稿區覆蓋一層生成提示；完成後自動帶入編輯器。</p>
     </div>
     </div>
 
     <!-- ============== A4 ============== -->
     <div class="col">
     <div class="scn">
-      <div class="scn-label"><span class="num">4</span>編輯器（AI 已填入）</div>
+      <div class="scn-label"><span class="num">5</span>編輯器（AI 已填入）</div>
       <span class="scn-size">1280 × 720</span>
       <div class="scn-inner">
         <div class="app">
@@ -543,11 +831,6 @@
             <div class="title-fld">老花雷射手術全解析｜40+ 族群的術前評估與適合對象</div>
 
             <div class="ed-title-l" style="margin-top:10px">內文</div>
-            <div class="ai-banner">
-              <span class="sp">✦</span>
-              <div class="grow">AI 已產生初稿<span class="mini">依輸入主題建立，可直接編輯。如需改寫請至列表點「編輯」重新生成。</span></div>
-              
-            </div>
             <div class="toolbar">
               <span class="tb">↶</span><span class="tb">↷</span><span class="tb">段落</span><span class="tb">Normal</span>
               <span class="tb">12pt</span><span class="tb">B</span><span class="tb">I</span><span class="tb">U</span><span class="tb">S</span><span class="tb">🖼</span>
@@ -561,13 +844,15 @@
               <p>完整檢查約 90 分鐘，包含角膜地形圖、淚液測試、屈光度檢測<span class="typing"></span></p>
             </div>
           </div>
+          <div class="toast">AI 已產生草稿，已填入編輯器</div>
         </div>
       </div>
     </div>
 
     <div class="note">
-      <span class="nh">📝 4 · 編輯器已填入</span>
-      <p></p>
+      <span class="nh">📝 5 · 編輯器已填入</span>
+      <p>生成完成後草稿落入編輯器，可自由修改。</p>
+      <p>頂部置中以<b>膠囊狀 toast</b> 提示「AI 已產生初稿」，數秒後自動消失（不佔版面）。</p>
     </div>
     </div>
 
@@ -782,7 +1067,7 @@
     <div class="plan-b-veil" aria-hidden="true">
       <div class="stamp-b">
         方案 B · 暫緩
-        <span class="sub"> wp 前端可行性問題先不管</span>
+        <span class="sub">本次先聚焦方案 A，這層遮罩之後可拿掉</span>
       </div>
     </div>
   </div>
@@ -797,7 +1082,7 @@
     layerEl.innerHTML = '';
     const scns = canvasEl.querySelectorAll('.scn');
     if (scns.length < 2) return;
-    const labels = ['點「+ 新增文章」','選「AI 產生」','Phase 1 / 2 兩版並列','送出 → AI 生成'];
+    const labels = ['點「+ 新增文章」','選「AI 產生」','Phase 1 / 2 兩版並列','送出 → 產生草稿','點「修改」展開輸入','按「確定」→ 生成中','生成完成 → 填入編輯器'];
     for (let i=0; i<scns.length-1; i++){
       const a = scns[i], b = scns[i+1];
       const A = {x:a.offsetLeft + a.offsetWidth, y:a.offsetTop + a.offsetHeight/2};
